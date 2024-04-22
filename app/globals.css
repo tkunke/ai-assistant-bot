@@ -24,6 +24,9 @@
   }
 }
 
+.max-w-custom {
+  max-width: 80%; /* Adjust the value as needed */
+}
 
 /* openai CSS */
 .openai-text p {
