@@ -1,6 +1,6 @@
 'use client'
 import {useState} from "react";
-import {AiOutlineUser, AiOutlineRobot, AiOutlineSend} from "react-icons/ai";
+import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
 import Markdown from 'react-markdown';
 
 
@@ -167,7 +167,7 @@ export function CinetechAssistantMessage({message}) {
             case "user":
                 return <AiOutlineUser />;
             case "assistant":
-                return <AiOutlineRobot />;
+                return <AiOutlineCamera />;
         }
     }
     return (
