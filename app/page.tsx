@@ -12,7 +12,7 @@ export default function Home() {
           </div>
         </div>
         <CinetechAssistant 
-          assistantId="asst_fmjzsttDthGzzJud4Vv2bDGq"
+          assistantId="asst_4Oi2o9LXTnvQbz9o44nrj6mi"
           greeting="Waddup, Chuck?"
           messageLimit={10}
         />
