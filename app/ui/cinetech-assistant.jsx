@@ -1,6 +1,7 @@
 'use client'
 import {useState} from "react";
 import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
+import { BiFontSize } from "react-icons/bi";
 import Markdown from 'react-markdown';
 
 
@@ -120,7 +121,7 @@ export default function CinetechAssistant({
       }
 
     return (
-        <div className="flex flex-col bg-slate-200 shadow-md relative">
+        <div className="flex flex-col relative">
             <CinetechAssistantMessage
                 message={greetingMessage}
             />
@@ -141,7 +142,7 @@ export default function CinetechAssistant({
                     className="border rounded w-full py-2 px-3 text-gray-70" 
                     onChange={handlePromptChange}
                     value={prompt}
-                    placeholder="prompt" />
+                    placeholder="Type your query here..." />
                 {isLoading ? 
                     <button 
                         disabled
@@ -151,7 +152,7 @@ export default function CinetechAssistant({
                     : 
                     <button 
                         disabled={prompt.length == 0}
-                        className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
+                        className="ml-2 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
                         <AiOutlineSend /> 
                     </button>
                 }
@@ -163,15 +164,23 @@ export default function CinetechAssistant({
 export function CinetechAssistantMessage({message}) {
 
     function displayRole(roleName) {
+        const maroonRed = '#800000';
+        const roleStyle = {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            color: roleName === "assistant" ? maroonRed : 'inherit'
+        };
         switch (roleName) {
             case "user":
-                return <AiOutlineUser />;
+                return <span style={roleStyle}>User</span>;
             case "assistant":
-                return <AiOutlineCamera />;
+                return <span style={roleStyle}>Cinetech</span>;
+            default:
+                return null;
         }
     }
     return (
-        <div className="flex rounded text-gray-700 text-center bg-white px-4 py-2 m-2 shadow-md">
+        <div className="flex flex-col rounded text-gray-700 text-center bg-white px-4 py-2 m-2 shadow-md" style={{ alignItems: 'flex-start' }}>
             <div className="text-4xl">
                 {displayRole(message.role)}
             </div>
