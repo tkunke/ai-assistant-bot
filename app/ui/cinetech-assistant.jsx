@@ -146,7 +146,7 @@ export default function CinetechAssistant({
                 {isLoading ? 
                     <button 
                         disabled
-                        className="ml-2  bg-blue-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
+                        className="ml-2  bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
                         <CinetechSpinner /> 
                     </button>
                     : 
