@@ -4,29 +4,44 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="relative text-center">
-      <div className="relative w-full">
+      {/* Image container */}
+      <div className="relative w-full overflow-hidden">
         <Image
-          src="/CameraTechAssistant_Pic.png"
-          layout="responsive"
-          width={100}
-          height={100}
-          objectFit="cover"
+          src="/Cyber_Guy_Camera.png"
+          width={1920}
+          height={1080}
           alt="Background"
-          className="opacity-90"
+          className="opacity-100"
         />
-        <div className="absolute inset-0 flex flex-col justify-center items-center">
-          <h1 className="text-white text-4xl font-bold mb-4">
-            Welcome to Our Service!
-          </h1>
-          <p className="text-white text-lg mb-8">
-            Experience the new way to interact with applications.
-          </p>
-          <Link href="/assistant">
-            <button className="px-8 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition">
-              Try the Assistant
-            </button>
-          </Link>
+      </div>
+      
+      {/* Text overlay */}
+      <div className="absolute top-1/3 left-0 w-full text-white">
+        <div className="container mx-auto px-4 py-12">
+          {/* Text above the button */}
+          <div className="mb-8">
+            <h1 className="text-7xl font-bold mb-4">
+              Welcome to the CineTech Assistant
+            </h1>
+            <p className="text-2xl">
+              A Technical Assistant Using OpenAI
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Description and button container */}
+      <div className="container mx-auto px-4 py-12 text-center">
+        <p className="text-xl mb-4">
+          The CineTech Assistant is designed as an advanced virtual aide for
+          filmmakers, cinematographers, and enthusiasts engaged in the cinematic arts and technologies.
+          It is tailored to serve a wide spectrum of needs in the film and video production domains.
+        </p>
+        <Link href="/assistant">
+          <button className="px-12 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-700 transition">
+            Try the Assistant
+          </button>
+        </Link>
       </div>
     </div>
   );
