@@ -161,8 +161,7 @@ export default function CinetechAssistant({
     )
 }
 
-export function CinetechAssistantMessage({message}) {
-
+export function CinetechAssistantMessage({ message }) {
     function displayRole(roleName) {
         const maroonRed = '#800000';
         const roleStyle = {
@@ -179,8 +178,11 @@ export function CinetechAssistantMessage({message}) {
                 return null;
         }
     }
+
+    const backgroundColor = message.role === 'assistant' ? 'bg-gray-200' : 'bg-white';
+
     return (
-        <div className="flex flex-col rounded text-gray-700 text-center bg-white px-4 py-2 m-2 shadow-md" style={{ alignItems: 'flex-start' }}>
+        <div className={`flex flex-col rounded text-gray-700 text-center ${backgroundColor} px-4 py-2 m-2 shadow-md`} style={{ alignItems: 'flex-start' }}>
             <div className="text-4xl">
                 {displayRole(message.role)}
             </div>
@@ -192,6 +194,7 @@ export function CinetechAssistantMessage({message}) {
         </div>
     )
 }
+
 
 // Based on https://flowbite.com/docs/components/spinner/
 function CinetechSpinner() {
