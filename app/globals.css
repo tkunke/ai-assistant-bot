@@ -97,7 +97,7 @@ body {
 }
 
 main {
-  margin-top: 50px; /* Adjust this value based on the height of the header */
+  margin-top: 100px; /* Adjust this value based on the height of the header */
   margin-bottom: 50px; /* Adjust this value based on the height of the footer */
   overflow-y: auto;
 }
