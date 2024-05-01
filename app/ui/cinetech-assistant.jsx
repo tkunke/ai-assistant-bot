@@ -1,9 +1,7 @@
 'use client'
 import {useState} from "react";
 import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
-import { BiFontSize } from "react-icons/bi";
 import Markdown from 'react-markdown';
-
 
 export default function CinetechAssistant({
     assistantId,

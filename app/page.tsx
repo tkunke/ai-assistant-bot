@@ -7,7 +7,7 @@ export default function Home() {
       {/* Image container */}
       <div className="relative w-full overflow-hidden">
         <Image
-          src="/Cyber_Guy_Camera.png"
+          src="/Cinetech_Webste_Logo_Background0001.png"
           width={1920}
           height={1080}
           alt="Background"
