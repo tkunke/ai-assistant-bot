@@ -134,27 +134,33 @@ export default function CinetechAssistant({
                     message={streamingMessage}
                 />
             }
-            <form onSubmit={handleSubmit} className="m-2 flex">
-                <input 
-                    disabled={isLoading}
-                    className="border rounded w-full py-2 px-3 text-gray-70" 
-                    onChange={handlePromptChange}
-                    value={prompt}
-                    placeholder="Type your query here..." />
-                {isLoading ? 
-                    <button 
-                        disabled
-                        className="ml-2  bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
-                        <CinetechSpinner /> 
-                    </button>
-                    : 
-                    <button 
-                        disabled={prompt.length == 0}
-                        className="ml-2 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
-                        <AiOutlineSend /> 
-                    </button>
-                }
-            </form>
+            <div>
+                <footer className="footer">
+                    <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg" style={{ height: '50px' }}>
+                        <form onSubmit={handleSubmit} className="m-2 flex">
+                            <input 
+                                disabled={isLoading}
+                                className="border rounded w-full py-2 px-3 text-gray-70" 
+                                onChange={handlePromptChange}
+                                value={prompt}
+                                placeholder="Type your query here..." />
+                            {isLoading ? 
+                                <button 
+                                    disabled
+                                    className="ml-2  bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
+                                    <CinetechSpinner /> 
+                                </button>
+                                : 
+                                <button 
+                                    disabled={prompt.length == 0}
+                                    className="ml-2 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
+                                    <AiOutlineSend /> 
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </footer>
+            </div>
         </div>
     )
 }
