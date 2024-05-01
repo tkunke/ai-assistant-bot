@@ -68,3 +68,9 @@
   background-repeat: no-repeat;
   background-position: center center;
 }
+
+body {
+  background-image: url(/Cinetech_Webste_Logo_Background0001.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
