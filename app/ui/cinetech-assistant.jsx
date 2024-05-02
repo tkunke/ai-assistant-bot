@@ -145,32 +145,35 @@ export default function CinetechAssistant({
                 />
             }
             <div>
-                <footer className="footer">
-                    <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg" style={{ height: '50px' }}>
-                        <form onSubmit={handleSubmit} className="m-2 flex">
-                            <input 
-                                disabled={isLoading}
-                                className="border rounded w-full py-2 px-3 text-gray-70" 
-                                onChange={handlePromptChange}
-                                value={prompt}
-                                placeholder="Type your query here..." />
-                            {isLoading ? 
-                                <button 
-                                    disabled
-                                    className="ml-2  bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
-                                    <CinetechSpinner /> 
-                                </button>
-                                : 
-                                <button 
-                                    disabled={prompt.length == 0}
-                                    className="ml-2 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">   
-                                    <AiOutlineSend /> 
-                                </button>
-                            }
-                        </form>
-                    </div>
-                </footer>
-            </div>
+    <footer className="footer">
+        <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg md:p-4 md:py-2" style={{ height: 'auto' }}>
+            <form onSubmit={handleSubmit} className="m-2 flex flex-col md:flex-row items-center">
+                <input 
+                    disabled={isLoading}
+                    className="border rounded w-full md:w-auto py-2 px-3 text-gray-700 mb-2 md:mb-0 md:mr-2" 
+                    onChange={handlePromptChange}
+                    value={prompt}
+                    placeholder="Type your query here..." 
+                    style={{ minWidth: '200px', flexGrow: 1 }} // Set minimum width for smaller screens and allow it to grow to fill available space
+                />
+                {isLoading ? 
+                    <button 
+                        disabled
+                        className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
+                        <CinetechSpinner /> 
+                    </button>
+                    : 
+                    <button 
+                        disabled={prompt.length === 0}
+                        className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
+                        <AiOutlineSend /> 
+                    </button>
+                }
+            </form>
+        </div>
+    </footer>
+</div>
+
         </div>
     )
 }
