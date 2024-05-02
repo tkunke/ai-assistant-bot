@@ -146,7 +146,7 @@ export default function CinetechAssistant({
             }
             <div>
     <footer className="footer">
-        <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg md:p-4 md:py-2" style={{ height: 'auto' }}>
+        <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg md:p-4 md:py-2" style={{ height: '10vh' }}>
             <form onSubmit={handleSubmit} className="m-2 flex flex-col md:flex-row items-center">
                 <input 
                     disabled={isLoading}
