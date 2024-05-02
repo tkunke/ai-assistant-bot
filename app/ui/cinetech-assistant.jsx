@@ -3,6 +3,11 @@ import {useState} from "react";
 import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
 import Markdown from 'react-markdown';
 
+function containsMarkdown(content) {
+    // Check if the content contains Markdown syntax
+    return /\|.*\|/.test(content); // Checking for a table pattern as an example
+}
+
 export default function CinetechAssistant({
     assistantId,
     greeting = "I am a helpful chat assistant. How can I help you?",
@@ -14,7 +19,7 @@ export default function CinetechAssistant({
     const [messages, setMessages] = useState([]);
     const [streamingMessage, setStreamingMessage] = useState({
         role: "assistant",
-        content: "_Thinking..._",
+        content: "Thinking...",
     });
 
     // set default greeting Message
@@ -29,7 +34,7 @@ export default function CinetechAssistant({
         // clear streaming message
         setStreamingMessage({
             role: "assistant",
-            content: "_Thinking..._",
+            content: "Thinking...",
         });
 
         // add busy indicator
@@ -91,9 +96,11 @@ export default function CinetechAssistant({
                     // update streaming message content
                     case "thread.message.delta":
                         contentSnapshot += serverEvent.data.delta.content[0].text.value;
+                        const isMarkdown = serverEvent.data.delta.content[0].hasOwnProperty('markdown');
                         const newStreamingMessage = {
                             ...streamingMessage,
                             content: contentSnapshot,
+                            isMarkdown: isMarkdown,
                         };
                         setStreamingMessage(newStreamingMessage);
                         break;
@@ -126,7 +133,10 @@ export default function CinetechAssistant({
             {messages.map(m => 
                 <CinetechAssistantMessage
                     key={m.id}
-                    message={m}
+                    message={{
+                        ...m,
+                        isMarkdown: containsMarkdown(m.content)
+                    }}
                 />
             )}
             {isLoading &&
@@ -191,9 +201,11 @@ export function CinetechAssistantMessage({ message }) {
                 {displayRole(message.role)}
             </div>
             <div className="mx-4 text-left overflow-auto openai-text">
-                <Markdown>
-                    {message.content}
-                </Markdown>
+                {message.isMarkdown ? (
+                    <Markdown>{message.content}</Markdown>
+                ) : (
+                    <div>{message.content}</div>
+                )}
             </div>
         </div>
     )
