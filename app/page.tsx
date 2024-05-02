@@ -8,11 +8,11 @@ export default function Home() {
       <div className="relative w-full overflow-hidden">
         <Image
           src="/Cinetech_Logo_Clean_Blue_001.png"
-          layout="responsive"
-          width={1920}
-          height={1080}
-          alt="Background"
-          className="opacity-100"
+          alt="background"
+          width="0"
+          height="0"
+          sizes="100vw"
+          className="w-full h-auto"
         />
       </div>
       
