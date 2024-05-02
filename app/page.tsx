@@ -8,6 +8,7 @@ export default function Home() {
       <div className="relative w-full overflow-hidden">
         <Image
           src="/Cinetech_Logo_Clean_Blue_001.png"
+          layout="responsive"
           width={1920}
           height={1080}
           alt="Background"
@@ -20,19 +21,19 @@ export default function Home() {
         <div className="container mx-auto px-4 py-12 h-full flex flex-col justify-end">
           {/* Text above the button */}
           <div>
-            <h1 className="text-7xl font-bold mb-4">
+            <h1 className="text-4xl md:text-7xl font-bold mb-4"> {/* Adjusted text size */}
               Welcome to the CineTech Assistant
             </h1>
-            <p className="text-2xl p-8">
+            <p className="text-lg md:text-2xl p-4 md:p-8"> {/* Adjusted text size */}
               A Technical Assistant Using OpenAI
             </p>
-            <p className="text-xl mb-4">
+            <p className="text-base md:text-xl mb-4"> {/* Adjusted text size */}
               The CineTech Assistant is designed as an advanced virtual aide for
               filmmakers, cinematographers, and enthusiasts engaged in the cinematic arts and technologies.
               It is specifically designed to serve a wide spectrum of needs in the film and video production domains.
             </p>
             <Link href="/assistant">
-              <button className="px-12 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-700 transition">
+              <button className="px-6 py-2 md:px-12 md:py-3 bg-blue-500 text-white rounded-full hover:bg-blue-700 transition"> {/* Adjusted button size */}
                 Try the Assistant
               </button>
             </Link>
@@ -42,5 +43,3 @@ export default function Home() {
     </div>
   );
 }
-
-
