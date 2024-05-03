@@ -20,6 +20,8 @@ const config: Config = {
         'lg': '1024px', // Large devices (desktops, 1024px and down)
         'xl': '1280px', // Extra large devices (large desktops, 1280px and down)
         '2xl': '1536px', // 2xl screens (1536px and up)
+        'portrait': {'raw': '(orientation: portrait)'},
+        'landscape': {'raw': '(orientation: landscape)'},
       },
     },
   },  

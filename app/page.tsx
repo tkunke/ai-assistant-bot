@@ -1,31 +1,26 @@
-'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useMediaQuery} from 'react-responsive';
 
 export default function Home() {
-  const isDesktopOrLaptop = useMediaQuery({
-    query: '(min-device-width: 1224px)'
-  });
-
-  const backgroundImageStyle = {
-    backgroundImage: `url(/Cinetech_Webste_Logo__Final_.png)`,
-    backgroundSize: isDesktopOrLaptop ? 'cover' : 'contain',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  };
-
   return (
-    <div className="relative text-center" style={backgroundImageStyle}>
-      {/* Button overlay */}
-      <div className="absolute bottom-20 left-0 w-full h-1/3 flex items-center justify-center">
-        <div className="container mx-auto px-4 py-6 md:py-12 flex flex-col items-center">
-          <div className="mb-6">
-            <Link href="/assistant">
-              <button className="px-6 py-2 md:px-12 md:py-3 bg-white text-gray-700 rounded-full hover:bg-gray-200 hover:text-gray-900 transition">
-                Try the Assistant
-              </button>
-            </Link>
+    <div className="relative text-center">
+      {/* Image container */}
+      <div className="relative w-full overflow-hidden bg-cover">
+        <Image
+          src="/Cinetech_Logo_Clean_Blue_001.png"
+          alt="background"
+          width="0"
+          height="0"
+          sizes="100vw"
+          className="w-full h-auto"
+        />
+      </div>
+      <div className="absolute top-0 left-0 w-full h-50vh text-white">
+        <div className="container mx-auto px-4 py-12 h-full flex flex-col justify-end">
+          <div>
+            <h1 className="text-xl md:text-10xl 2xl:text-5xl font-bold mb-4">
+              Welcome to the CineTech Assistant
+            </h1>
           </div>
         </div>
       </div>
