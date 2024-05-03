@@ -198,20 +198,39 @@ export function CinetechAssistantMessage({ message }) {
 
     const backgroundColor = message.role === 'assistant' ? 'bg-gray-200' : 'bg-white';
 
+    const formatHyperlinks = (text) => {
+        const urlRegex = /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
+    
+        return text.replace(urlRegex, (match, text, url) => {
+          return `<a href="${url}" target="_blank" rel="noopener noreferrer"><strong><u>${text}</u></strong></a>`;
+        });
+    };
+
+    const renderFormattedResponse = () => {
+        const formattedText = formatHyperlinks(message.content);
+    
+        return (
+          <div
+            dangerouslySetInnerHTML={{ __html: formattedText }}
+            className="mx-4 text-left overflow-auto openai-text"
+          />
+        );
+    };
+    
     return (
         <div className={`flex flex-col rounded text-gray-700 text-center ${backgroundColor} bg-opacity-20 px-4 py-2 m-2 shadow-md`} style={{ alignItems: 'flex-start' }}>
             <div className="text-4xl">
                 {displayRole(message.role)}
             </div>
-            <div className="mx-4 text-left overflow-auto openai-text">
-                {message.isMarkdown ? (
-                    <Markdown>{message.content}</Markdown>
-                ) : (
-                    <div>{message.content}</div>
-                )}
-            </div>
+            {message.isMarkdown ? (
+                <Markdown>{message.content}</Markdown>
+            ) : (
+                <div>
+                    {renderFormattedResponse()}
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
 
