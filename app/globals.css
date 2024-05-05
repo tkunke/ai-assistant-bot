@@ -63,15 +63,14 @@
 }
 
 .page-background {
-  background-image: url(/background_portrait.png);
   background-size: cover; /* or 'contain' depending on your preference */
   background-repeat: no-repeat;
   background-position: center center;
 }
 
 body {
-  background-image: url(/background_portrait.png);
-  background-size: contain;
+  background-image: url(/background_landscape.png);
+  background-size: cover;
   background-repeat: no-repeat;
 }
 
@@ -80,7 +79,6 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background-image: url(/Cinetech_Webste_Logo_Background0001.png);
   background-color: rgba(255, 255, 255, 0.8);
   box-shadow: none;
   z-index: 999;
