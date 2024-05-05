@@ -63,15 +63,15 @@
 }
 
 .page-background {
-  background-image: url(/Cinetech_Webste_Logo_Background0001.png);
+  background-image: url(/background_portrait.png);
   background-size: cover; /* or 'contain' depending on your preference */
   background-repeat: no-repeat;
   background-position: center center;
 }
 
 body {
-  background-image: url(/Cinetech_Webste_Logo_Background0001.png);
-  background-size: cover;
+  background-image: url(/background_portrait.png);
+  background-size: contain;
   background-repeat: no-repeat;
 }
 

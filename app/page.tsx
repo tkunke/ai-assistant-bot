@@ -1,29 +1,26 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MdHeight } from 'react-icons/md';
+import {useMediaQuery} from 'react-responsive';
 
 export default function Home() {
+  // Function to check the screen orientation
+  const getScreenOrientation = () => {
+    return window.matchMedia("(orientation: portrait)").matches ? "portrait" : "landscape";
+  };
+
+  // Define background images for portrait and landscape orientations
+  const portraitBackground = "/background_portrait.png";
+  const landscapeBackground = "/background_landscape.png";
+
+  // Determine the current screen orientation
+  const screenOrientation = getScreenOrientation();
+
+  // Render different background images based on the screen orientation
   return (
-    <div className="relative text-center">
-      {/* Image container */}
-      <div className="relative w-full overflow-hidden bg-cover">
-        <Image
-          src="/Cinetech_Logo_Clean_Blue_001.png"
-          alt="background"
-          width="0"
-          height="0"
-          sizes="100vw"
-          className="w-full h-auto"
-        />
-      </div>
-      <div className="absolute top-0 left-0 w-full h-50vh text-white">
-        <div className="container mx-auto px-4 py-12 h-full flex flex-col justify-end">
-          <div>
-            <h1 className="text-xl md:text-10xl 2xl:text-5xl font-bold mb-4">
-              Welcome to the CineTech Assistant
-            </h1>
-          </div>
-        </div>
-      </div>
+    <div className="relative text-center" style={{ width: "100vw", height: "100vh", backgroundImage: `url(${screenOrientation === 'portrait' ? portraitBackground : landscapeBackground})` }}>
+      {/* Add other content here */}
     </div>
   );
 }
