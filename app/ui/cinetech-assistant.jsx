@@ -126,7 +126,7 @@ export default function CinetechAssistant({
       }
 
     return (
-        <div className="flex flex-col relative">
+        <div className="flex flex-col relative py-10">
             <CinetechAssistantMessage
                 message={greetingMessage}
             />
@@ -146,7 +146,7 @@ export default function CinetechAssistant({
             }
             <div>
     <footer className="footer">
-        <div className="mx-auto mb-12 max-w-custom text-center p-8 rounded-lg md:p-4 md:py-2" style={{ height: '10vh' }}>
+        <div className="mx-auto mb-20 max-w-custom text-center p-8 rounded-lg xs:p-2 md:p-4 md:py-2" style={{ height: '2vh' }}>
             <form onSubmit={handleSubmit} className="m-2 flex flex-col md:flex-row items-center">
                 <input 
                     disabled={isLoading}
@@ -155,6 +155,7 @@ export default function CinetechAssistant({
                     value={prompt}
                     placeholder="Type your query here..." 
                     style={{ minWidth: '200px', flexGrow: 1 }} // Set minimum width for smaller screens and allow it to grow to fill available space
+                    backgroundColor="whitesmoke"
                 />
                 {isLoading ? 
                     <button 
@@ -218,7 +219,7 @@ export function CinetechAssistantMessage({ message }) {
     };
     
     return (
-        <div className={`flex flex-col rounded text-gray-700 text-center ${backgroundColor} bg-opacity-20 px-4 py-2 m-2 shadow-md`} style={{ alignItems: 'flex-start' }}>
+        <div className={`flex flex-col rounded text-gray-700 text-center px-4 py-2 m-2 bg-opacity-100`} style={{ alignItems: 'flex-start' }}>
             <div className="text-4xl">
                 {displayRole(message.role)}
             </div>

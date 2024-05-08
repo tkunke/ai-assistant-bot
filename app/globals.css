@@ -63,13 +63,14 @@
 }
 
 .page-background {
+  background-image: url(/background_landscape.png);
   background-size: cover; /* or 'contain' depending on your preference */
   background-repeat: no-repeat;
   background-position: center center;
 }
 
 body {
-  background-image: url(/background_landscape.png);
+  background-color: rgba(255, 255, 255, 0.8);
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -80,6 +81,7 @@ body {
   left: 0;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.8);
+  background-image: url(/background_landscape.png);
   box-shadow: none;
   z-index: 999;
 }
@@ -89,13 +91,16 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.8);
+  background-image: url(/background_landscape.png);
   box-shadow: none;
   z-index: 999;
 }
 
 main {
-  margin-top: 100px; /* Adjust this value based on the height of the header */
-  margin-bottom: 50px; /* Adjust this value based on the height of the footer */
+  margin-top: 12vh; /* Adjust this value based on the height of the header */
+  margin-bottom: 10vh; /* Adjust this value based on the height of the footer */
   overflow-y: auto;
+  box-shadow: none;
+  background-color: rgba(255, 255, 255, 0.8);
 }
