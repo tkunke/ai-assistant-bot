@@ -110,8 +110,14 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,td {
   border: 1px solid black;
   padding: 8px;
   text-align: left;
+  background-color: rgba(142, 192, 207, 0.8);
+}
+
+thead th {
+  color: black; /* Header text color */
+  background-color: lightgray; /* Background color for contrast */
 }
