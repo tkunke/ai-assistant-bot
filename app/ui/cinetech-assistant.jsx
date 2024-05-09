@@ -1,11 +1,12 @@
 'use client'
 import {useState} from "react";
 import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
-import Markdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 function containsMarkdown(content) {
     // Check if the content contains Markdown syntax
-    return /(\*\*|__|`|#|\*|-|\[|\]|\(|\)|\|)/.test(content); // Check for bold, italics, code, headers, lists, links, and tables
+    return /(\*\*|__|`|#|\*|-|\||\n[\-=\*]{3,}\s*$)/.test(content.replace(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g, ''));
 }
 
 export default function CinetechAssistant({
@@ -145,36 +146,35 @@ export default function CinetechAssistant({
                 />
             }
             <div>
-    <footer className="footer">
-        <div className="mx-auto mb-20 max-w-custom text-center p-8 rounded-lg xs:p-2 md:p-4 md:py-2" style={{ height: '2vh' }}>
-            <form onSubmit={handleSubmit} className="m-2 flex flex-col md:flex-row items-center">
-                <input 
-                    disabled={isLoading}
-                    className="border rounded w-full md:w-auto py-2 px-3 text-gray-700 mb-2 md:mb-0 md:mr-2" 
-                    onChange={handlePromptChange}
-                    value={prompt}
-                    placeholder="Type your query here..." 
-                    style={{ minWidth: '200px', flexGrow: 1 }} // Set minimum width for smaller screens and allow it to grow to fill available space
-                    backgroundColor="whitesmoke"
-                />
-                {isLoading ? 
-                    <button 
-                        disabled
-                        className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
-                        <CinetechSpinner /> 
-                    </button>
-                    : 
-                    <button 
-                        disabled={prompt.length === 0}
-                        className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
-                        <AiOutlineSend /> 
-                    </button>
-                }
-            </form>
-        </div>
-    </footer>
-</div>
-
+                <footer className="footer">
+                    <div className="mx-auto mb-20 max-w-custom text-center p-8 rounded-lg xs:p-2 md:p-4 md:py-2" style={{ height: '2vh' }}>
+                        <form onSubmit={handleSubmit} className="m-2 flex flex-col md:flex-row items-center">
+                            <input 
+                                disabled={isLoading}
+                                className="border rounded w-full md:w-auto py-2 px-3 text-gray-700 mb-2 md:mb-0 md:mr-2" 
+                                onChange={handlePromptChange}
+                                value={prompt}
+                                placeholder="Type your query here..." 
+                                style={{ minWidth: '200px', flexGrow: 1 }} // Set minimum width for smaller screens and allow it to grow to fill available space
+                                backgroundcolor="whitesmoke"
+                            />
+                            {isLoading ? 
+                                <button 
+                                    disabled
+                                    className="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
+                                    <CinetechSpinner /> 
+                                </button>
+                            : 
+                                <button 
+                                    disabled={prompt.length === 0}
+                                    className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 md:mb-0 md:ml-2">   
+                                    <AiOutlineSend /> 
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </footer>
+            </div>
         </div>
     )
 }
@@ -197,8 +197,6 @@ export function CinetechAssistantMessage({ message }) {
         }
     }
 
-    const backgroundColor = message.role === 'assistant' ? 'bg-gray-200' : 'bg-white';
-
     const formatHyperlinks = (text) => {
         const urlRegex = /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
     
@@ -209,22 +207,22 @@ export function CinetechAssistantMessage({ message }) {
 
     const renderFormattedResponse = () => {
         const formattedText = formatHyperlinks(message.content);
-    
         return (
-          <div
-            dangerouslySetInnerHTML={{ __html: formattedText }}
-            className="mx-4 text-left overflow-auto openai-text"
-          />
+            <div
+                dangerouslySetInnerHTML={{ __html: formattedText }}
+                className="mx-4 text-left overflow-auto openai-text"
+            />
         );
     };
-    
     return (
         <div className={`flex flex-col rounded text-gray-700 text-center px-4 py-2 m-2 bg-opacity-100`} style={{ alignItems: 'flex-start' }}>
             <div className="text-4xl">
                 {displayRole(message.role)}
             </div>
             {message.isMarkdown ? (
-                <Markdown>{message.content}</Markdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {message.content}
+                </ReactMarkdown>
             ) : (
                 <div>
                     {renderFormattedResponse()}
