@@ -5,7 +5,7 @@ import Markdown from 'react-markdown';
 
 function containsMarkdown(content) {
     // Check if the content contains Markdown syntax
-    return /\|.*\|/.test(content); // Checking for a table pattern as an example
+    return /(\*\*|__|`|#|\*|-|\[|\]|\(|\)|\|)/.test(content); // Check for bold, italics, code, headers, lists, links, and tables
 }
 
 export default function CinetechAssistant({
