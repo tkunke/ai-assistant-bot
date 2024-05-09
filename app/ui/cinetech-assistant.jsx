@@ -1,5 +1,5 @@
 'use client'
-import {useState} from "react";
+import {useState, useEffect, useRef} from "react";
 import {AiOutlineUser, AiOutlineSend, AiOutlineCamera} from "react-icons/ai";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -22,6 +22,8 @@ export default function CinetechAssistant({
         role: "assistant",
         content: "Thinking...",
     });
+    const messagesEndRef = useRef(null);
+    const [chunkCounter, setChunkCounter] = useState(0);
 
     // set default greeting Message
     const greetingMessage = {
@@ -104,6 +106,7 @@ export default function CinetechAssistant({
                             isMarkdown: isMarkdown,
                         };
                         setStreamingMessage(newStreamingMessage);
+                        setChunkCounter(prevCounter => prevCounter + 1);  // Increments the counter by one
                         break;
                 }
             }
@@ -120,6 +123,12 @@ export default function CinetechAssistant({
         // remove busy indicator
         setIsLoading(false);
     }
+
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [chunkCounter]);  // Triggers whenever the chunkCounter changes
 
     // handles changes to the prompt input field
     function handlePromptChange(e) {
@@ -141,10 +150,11 @@ export default function CinetechAssistant({
                 />
             )}
             {isLoading &&
-                <CinetechAssistantMessage
+                <CinetechAssistantMessage 
                     message={streamingMessage}
                 />
             }
+            <div ref={messagesEndRef} style={{ height: '1px' }}></div>
             <div>
                 <footer className="footer">
                     <div className="mx-auto mb-20 max-w-custom text-center p-8 rounded-lg xs:p-2 md:p-4 md:py-2" style={{ height: '2vh' }}>
