@@ -17,10 +17,114 @@
   }
 }
 
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Headers */
+.header-homepage {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header-homepage .header-content {
+  height: 5rem;
+  max-width: var(--max-w-custom);
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-background);
+}
+
+.header-homepage h1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  line-height: 1;
+  font-family: 'Limelight', sans-serif;
+  letter-spacing: normal;
+}
+
+@media (min-width: 640px) {
+  .header-homepage h1 {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .header-homepage h1 {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-homepage h1 {
+    font-size: 4rem;
+    letter-spacing: 10px;
+  }
+}
+
+.header-assistant {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  background-image: url(/background_landscape.png);
+  box-shadow: none;
+  z-index: 999;
+}
+
+/* Footers */
+.footer-homepage {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-homepage .footer-content {
+  height: 5rem;
+  max-width: var(--max-w-custom);
+  margin: 0 auto;
+  background-color: var(--color-background);
+}
+
+.footer-homepage h1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 2rem;
+  line-height: 1;
+  font-family: 'Limelight', sans-serif;
+  letter-spacing: normal;
+}
+
+@media (min-width: 360px) {
+  .footer-homepage h1 {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .footer-homepage h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-homepage h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-homepage h1 {
+    font-size: 2rem;
+    letter-spacing: 2px;
   }
 }
 
@@ -63,27 +167,74 @@
 }
 
 .page-background {
-  background-image: url(/background_landscape.png);
-  background-size: cover; /* or 'contain' depending on your preference */
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-image: url('/background-image_backlit.png'); /* Adjust path as needed */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  background-position: center center;
+}
+
+.page-background-portrait {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-image: url('/background-image_backlit_port.png'); /* Adjust path as needed */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.overlay-image-container {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for exact centering */
+  width: 60%; /* Or any other size depending on your design */
+  z-index: 10; /* Ensures it stays on top of the background */
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) { /* Adjust this breakpoint as needed */
+  .overlay-image-container {
+    width: 80%; /* Increase width on smaller screens */
+  }
+}
+
+/* Additional responsive handling for very small screens */
+@media (max-width: 360px) {
+  .overlay-image-container {
+    width: 90%; /* Even larger on very small screens */
+  }
+}
+
+.overlay-button-container {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 360px) {
+  .overlay-button-container {
+    position: relative;
+    width: 80%;
+  }
+}
+
+.overlay-image {
+  width: 100%;
+  height: auto;
+  display: block; /* Remove any extra space below the image */
 }
 
 body {
   background-color: rgba(255, 255, 255, 0.8);
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  background-image: url(/background_landscape.png);
-  box-shadow: none;
-  z-index: 999;
 }
 
 .footer {

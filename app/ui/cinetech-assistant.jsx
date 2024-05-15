@@ -23,6 +23,7 @@ export default function CinetechAssistant({
         content: "Thinking...",
     });
     const messagesEndRef = useRef(null);
+    const inputRef = useRef(null);
     const [chunkCounter, setChunkCounter] = useState(0);
 
     // set default greeting Message
@@ -130,6 +131,12 @@ export default function CinetechAssistant({
         }
     }, [chunkCounter]);  // Triggers whenever the chunkCounter changes
 
+    useEffect(() => {
+        if (!isLoading && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isLoading, messages]);
+
     // handles changes to the prompt input field
     function handlePromptChange(e) {
         setPrompt(e.target.value);
@@ -167,6 +174,7 @@ export default function CinetechAssistant({
                                 placeholder="Type your query here..." 
                                 style={{ minWidth: '200px', flexGrow: 1 }} // Set minimum width for smaller screens and allow it to grow to fill available space
                                 backgroundcolor="whitesmoke"
+                                ref={inputRef}
                             />
                             {isLoading ? 
                                 <button 
