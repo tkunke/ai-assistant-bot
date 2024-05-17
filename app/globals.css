@@ -128,6 +128,49 @@
   }
 }
 
+/* Images */
+.image-tools-container {
+  position: absolute;
+  top: 20px; /* Adjust the top position as needed */
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.image-tools-container img {
+  max-width: 100%; /* Ensure the image is responsive */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.overlay-image-container {
+  position: absolute;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust for exact centering */
+  width: 60%; /* Or any other size depending on your design */
+  z-index: 10; /* Ensures it stays on top of the background */
+}
+
+.overlay-image {
+  width: 100%;
+  height: auto;
+  display: block; /* Remove any extra space below the image */
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) { /* Adjust this breakpoint as needed */
+  .overlay-image-container {
+    width: 80%; /* Increase width on smaller screens */
+  }
+}
+
+/* Additional responsive handling for very small screens */
+@media (max-width: 360px) {
+  .overlay-image-container {
+    width: 90%; /* Even larger on very small screens */
+  }
+}
+
 .max-w-custom {
   max-width: 80%; /* Adjust the value as needed */
 }
@@ -166,6 +209,7 @@
   color: white;
 }
 
+/* Backgrounds */
 .page-background {
   position: relative;
   height: 100vh;
@@ -186,27 +230,24 @@
   background-repeat: no-repeat;
 }
 
-.overlay-image-container {
-  position: absolute;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Adjust for exact centering */
-  width: 60%; /* Or any other size depending on your design */
-  z-index: 10; /* Ensures it stays on top of the background */
+.page-tools-background {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(137, 190, 201);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* Responsive styles for smaller screens */
-@media (max-width: 768px) { /* Adjust this breakpoint as needed */
-  .overlay-image-container {
-    width: 80%; /* Increase width on smaller screens */
-  }
-}
-
-/* Additional responsive handling for very small screens */
-@media (max-width: 360px) {
-  .overlay-image-container {
-    width: 90%; /* Even larger on very small screens */
-  }
+.page-tools-background-portrait {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(137, 190, 201);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .overlay-button-container {
@@ -225,10 +266,15 @@
   }
 }
 
-.overlay-image {
-  width: 100%;
-  height: auto;
-  display: block; /* Remove any extra space below the image */
+.button-tools {
+  size: 3rem;
+  background-color: silver;
+  border-radius: 9999px;
+  padding: 10px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 body {
@@ -272,3 +318,22 @@ thead th {
   color: black; /* Header text color */
   background-color: lightgray; /* Background color for contrast */
 }
+
+/* Ensure the charts are responsive */
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* You can adjust the max-width as needed */
+  margin: 20px auto; /* Center the chart and add some margin */
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow for better visibility */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  background-color: #fff; /* Optional: Set a background color */
+}
+
+/* Optional: Style for the chart canvas */
+.chart-container canvas {
+  width: 100% !important; /* Make the canvas take full width of the container */
+  height: auto !important; /* Maintain aspect ratio */
+}
+
