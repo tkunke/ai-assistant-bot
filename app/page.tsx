@@ -101,7 +101,7 @@ const ResponsiveDiv = () => {
           <footer className="footer-homepage">
             <div className="footer-content">
               <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                The CineTech Assistant is desinged as an advanced virtual aide for industry professionals and enthusiasts
+                The CineTech Assistant is designed as an advanced virtual aide for industry professionals and enthusiasts
               </h1>
             </div>
           </footer>
