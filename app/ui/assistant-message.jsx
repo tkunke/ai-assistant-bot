@@ -39,6 +39,10 @@ export default function CinetechAssistantMessage({ message }) {
     );
   };
 
+  const isImageUrl = (url) => {
+    return url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+  };
+
   return (
     <div
       className={`flex flex-col rounded text-gray-700 text-left px-4 py-2 m-2 bg-opacity-100`}
@@ -47,8 +51,10 @@ export default function CinetechAssistantMessage({ message }) {
       <div className="text-4xl">{displayRole(message.role)}</div>
       {message.chartData ? (
         <div className="chart-container">
-            <ChartComponent {...message.chartData} />
+          <ChartComponent {...message.chartData} />
         </div>
+      ) : isImageUrl(message.content) ? (
+        <img src={message.content} alt="Generated content" className="mx-4 my-2 rounded-lg" />
       ) : message.isMarkdown ? (
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
       ) : (

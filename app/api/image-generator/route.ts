@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { generateImage } from '../../helpers/generateImage';
 
-// Initialize the OpenAI client
-const openai = new OpenAI();
+// This enables Edge Functions in Vercel
+export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   console.log('Received request:', req.method);
@@ -21,15 +21,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Prompt is required' }, { status: 400 });
     }
 
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: content,
-    });
-
-    console.log('OpenAI response:', response);
-
-    if (response.data && response.data.length > 0) {
-      const url = response.data[0].url;
+    const url = await generateImage(content);
+    if (url) {
       console.log('Generated image URL:', url);
       return NextResponse.json({ url }, { status: 200 });
     } else {

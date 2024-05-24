@@ -81,6 +81,7 @@ export default function CinetechAssistant({
 
       // parse server sent event
       const strChunk = new TextDecoder().decode(value).trim();
+      //console.log('Received chunk:', strChunk);
 
       // split on newlines (to handle multiple JSON elements passed at once)
       const strServerEvents = strChunk.split('\n');
@@ -88,12 +89,13 @@ export default function CinetechAssistant({
       // process each event
       for (const strServerEvent of strServerEvents) {
         const serverEvent = JSON.parse(strServerEvent);
-        // console.log(serverEvent);
+        //console.log('Parsed server event:', serverEvent);
         switch (serverEvent.event) {
           // create new message
           case 'thread.message.created':
             newThreadId = serverEvent.data.thread_id;
             setThreadId(serverEvent.data.thread_id);
+            //console.log('New thread ID set:', newThreadId);
             break;
 
         // update streaming message content
@@ -108,6 +110,7 @@ export default function CinetechAssistant({
             };
             setStreamingMessage(newStreamingMessage);
             setChunkCounter((prevCounter) => prevCounter + 1); // Increments the counter by one
+            //console.log('Updated streaming message:', newStreamingMessage);
             }
             break;
         }
@@ -120,6 +123,7 @@ export default function CinetechAssistant({
       messageLimit: messageLimit,
     }));
     const allMessages = await messagesResponse.json();
+    //console.log('Fetched all messages:', allMessages);
     setMessages(allMessages);
 
     // remove busy indicator
@@ -138,6 +142,11 @@ export default function CinetechAssistant({
     }
   }, [isLoading, messages]);
 
+  // Log messages to console whenever they change
+  useEffect(() => {
+    console.log('Current messages state:', messages);
+  }, [messages]);
+  
   // handles changes to the prompt input field
   function handlePromptChange(e) {
     setPrompt(e.target.value);

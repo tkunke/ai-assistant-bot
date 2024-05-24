@@ -1,82 +1,181 @@
-import {NextRequest, NextResponse} from 'next/server'
-import OpenAI from 'openai/index.mjs'
+import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai/index.mjs';
+import { performBingSearch, BingSearchResult } from '../../helpers/performBingSearch'; // Adjust the import path as needed
+import { processSearchResults } from '../../helpers/processSearchResults'; // Adjust the import path as needed
+import { generateImage } from '../../helpers/generateImage'; // Adjust the import path as needed
+import { AssistantStream } from 'openai/lib/AssistantStream';
 
-// this enables Edge Functions in Vercel
-// see https://vercel.com/blog/gpt-3-app-next-js-vercel-edge-functions
-// and updated here: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
-export const runtime = "edge";
+// This enables Edge Functions in Vercel
+export const runtime = 'edge';
 
-// post a new message and stream OpenAI Assistant response
-export async function POST(request:NextRequest) {
-    // parse message from post
-    const newMessage = await request.json();
+// Post a new message and stream OpenAI Assistant response
+export async function POST(request: NextRequest) {
+  //console.log('POST request received');
+  
+  // Parse message from post
+  const newMessage = await request.json();
+  //console.log('Parsed new message:', newMessage);
 
-    // create OpenAI client
-    const openai = new OpenAI();
+  // Create OpenAI client
+  const openai = new OpenAI();
 
-    // if no thread id then create a new openai thread
-    if (newMessage.threadId == null) {
-        const thread = await openai.beta.threads.create();
-        newMessage.threadId = thread.id;
+  // If no thread id then create a new openai thread
+  if (newMessage.threadId == null) {
+    //console.log('Creating a new thread');
+    const thread = await openai.beta.threads.create();
+    newMessage.threadId = thread.id;
+  }
+  //console.log('Thread ID:', newMessage.threadId);
+
+  // Add new message to thread
+  await openai.beta.threads.messages.create(newMessage.threadId, {
+    role: 'user',
+    content: newMessage.content,
+  });
+  //console.log('Message added to thread');
+
+  // Create a run and stream it
+  const runStream = await openai.beta.threads.runs.createAndStream(newMessage.threadId, {
+    assistant_id: newMessage.assistantId,
+    stream: true,
+  });
+  //console.log('Run created and streaming started');
+
+  const assistantStream = runStream; // Use runStream directly if it supports the necessary methods
+  const readableStream = runStream.toReadableStream();
+  //console.log('Readable stream created');
+
+  // Polling function to check run status
+  async function pollRunStatus(assistantStream: AssistantStream) {
+    //console.log('Polling run status started');
+    let runStatus = assistantStream.currentRun();
+
+    while (runStatus?.status !== 'completed') {
+      //console.log('Current run status:', runStatus?.status);
+
+      if (runStatus?.status === 'requires_action' && runStatus.required_action) {
+        //console.log('Action required. Processing tool calls.');
+        const toolCalls = runStatus.required_action.submit_tool_outputs.tool_calls;
+        const toolOutputs = [];
+
+        for (const toolCall of toolCalls) {
+          const functionName = toolCall.function.name;
+          const args = JSON.parse(toolCall.function.arguments);
+          let output: string | undefined;
+
+          try {
+            if (functionName === 'performBingSearch') {
+              const searchResults: BingSearchResult[] = await performBingSearch(args.user_request);
+              const searchResultsString = JSON.stringify(searchResults);
+              output = await processSearchResults(args.user_request, searchResultsString);
+            } else if (functionName === 'generateImage') {
+              const imageUrl = await generateImage(args.content);
+              output = imageUrl ?? undefined;
+            }
+
+            toolOutputs.push({
+              tool_call_id: toolCall.id,
+              output: output,
+            });
+          } catch (error) {
+            //console.error(`Error performing ${functionName}:`, error);
+            // Handle the error appropriately, e.g., log it or add a failed status
+            continue;
+          }
+        }
+
+        // Submit tool outputs
+        //console.log('Submitting tool outputs:', toolOutputs);
+        await openai.beta.threads.runs.submitToolOutputs(runStatus.thread_id, runStatus.id, {
+          tool_outputs: toolOutputs,
+        });
+        //console.log('Tool outputs submitted');
+
+        // After submitting tool outputs, break the loop and wait for the next status update
+        break;
+      }
+
+      // Implement a delay or polling mechanism to avoid too frequent requests
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Fetch the current run status again from the assistantStream
+      runStatus = assistantStream.currentRun();
+      //console.log('Run status updated:', runStatus);
     }
 
-    // add new message to thread
-    await openai.beta.threads.messages.create(
-        newMessage.threadId,
-        {
-            role: "user",
-            content: newMessage.content
-        }
-    );
+    //console.log('Run completed');
+  }
 
-    // create a run
-    const run = openai.beta.threads.runs.createAndStream(
-        newMessage.threadId, 
-        {assistant_id: newMessage.assistantId, stream:true}
-    );
-    
+  // Start polling the run status
+  pollRunStatus(assistantStream).catch((error) => {
+    //console.error('Error during polling run status:', error);
+  });
 
-    const stream = run.toReadableStream();
-    return new Response(stream);
+  return new Response(readableStream);
 }
 
-// get all of the OpenAI Assistant messages associated with a thread
-export async function GET(request:NextRequest) {
-    // get thread id
-    const searchParams = request.nextUrl.searchParams;
-    const threadId = searchParams.get("threadId");
-    const messageLimit = searchParams.get("messageLimit");
+// Define the RunStatus type
+interface RunStatus {
+  status: string;
+  required_action?: {
+    submit_tool_outputs: {
+      tool_calls: ToolCall[];
+    };
+  };
+  thread_id: string;
+  id: string;
+}
 
-    if (threadId == null) {
-        throw Error("Missing threadId");
-    }
+// Define the ToolCall type (ensure this matches your actual type)
+interface ToolCall {
+  id: string;
+  function: {
+    name: string;
+    arguments: string;
+  };
+}
 
-    if (messageLimit == null) {
-        throw Error("Missing messageLimit");
-    }
+// Get all of the OpenAI Assistant messages associated with a thread
+export async function GET(request: NextRequest) {
+  //console.log('GET request received');
+  
+  // Get thread id
+  const searchParams = request.nextUrl.searchParams;
+  const threadId = searchParams.get('threadId');
+  const messageLimit = searchParams.get('messageLimit');
 
-    // create OpenAI client
-    const openai = new OpenAI();
+  if (threadId == null) {
+    //console.error('Missing threadId');
+    throw Error('Missing threadId');
+  }
 
-    // get thread and messages
-    const threadMessages = await openai.beta.threads.messages.list(
-        threadId,
-        {limit: parseInt(messageLimit)},
-    );
+  if (messageLimit == null) {
+    //console.error('Missing messageLimit');
+    throw Error('Missing messageLimit');
+  }
 
-    // only transmit the data that we need
-    const cleanMessages = threadMessages.data.map(m => {
-        return {
-            id: m.id,
-            role: m.role,
-            content: m.content[0].type == "text" ? m.content[0].text.value : "",
-            createdAt: m.created_at,
-        };
-    });
+  // Create OpenAI client
+  const openai = new OpenAI();
 
-    // reverse chronology
-    cleanMessages.reverse();
+  // Get thread and messages
+  const threadMessages = await openai.beta.threads.messages.list(threadId, {
+    limit: parseInt(messageLimit),
+  });
 
-    // return back to client
-    return NextResponse.json(cleanMessages);
+  // Only transmit the data that we need
+  const cleanMessages = threadMessages.data.map((m) => {
+    return {
+      id: m.id,
+      role: m.role,
+      content: m.content[0].type == 'text' ? m.content[0].text.value : '',
+      createdAt: m.created_at,
+    };
+  });
+
+  // Reverse chronology
+  cleanMessages.reverse();
+
+  // Return back to client
+  //console.log('Returning messages to client:', cleanMessages);
+  return NextResponse.json(cleanMessages);
 }

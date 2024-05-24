@@ -35,7 +35,7 @@ export const processSearchResults = async (user_request: string, search_results:
 
   const analysis = response.data.choices[0].message.content.trim();
 
-  console.log(`Analysis: ${analysis}`);
+  //console.log(`Analysis: ${analysis}`);
 
   // Return the analysis
   return analysis;

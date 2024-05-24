@@ -9,18 +9,19 @@ interface OpenAIResponse {
   }>;
 }
 
-interface BingSearchResult {
+export interface BingSearchResult {
   name: string;
   url: string;
   snippet: string;
 }
 
 export const performBingSearch = async (user_request: string): Promise<BingSearchResult[]> => {
+  console.log('performBingSearch called with:', user_request);
   const openaiKey = process.env.OPENAI_API_KEY as string;
   const bingApiKey = process.env.BING_API_KEY as string;
 
-  console.log('OpenAI API Key:', openaiKey ? 'Set' : 'Not Set');
-  console.log('Bing API Key:', bingApiKey ? 'Set' : 'Not Set');
+  //console.log('OpenAI API Key:', openaiKey ? 'Set' : 'Not Set');
+  //console.log('Bing API Key:', bingApiKey ? 'Set' : 'Not Set');
 
   if (!openaiKey || !bingApiKey) {
     throw new Error('API keys are not set in the environment variables');
@@ -64,8 +65,8 @@ const runBingSearch = async (searchQuery: string, bingApiKey: string): Promise<B
       },
     });
 
-    console.log('Bing API response status:', response.status);
-    console.log('Bing API response data:', JSON.stringify(response.data, null, 2));
+    //console.log('Bing API response status:', response.status);
+    //console.log('Bing API response data:', JSON.stringify(response.data, null, 2));
 
     const responseData = response.data;
 
