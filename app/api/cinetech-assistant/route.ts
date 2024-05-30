@@ -15,7 +15,7 @@ interface RunStatus {
     submit_tool_outputs: {
       tool_calls: ToolCall[];
     };
-  };
+  } | null; // Allow null for compatibility
   thread_id: string;
   id: string;
 }
@@ -46,7 +46,11 @@ type ImageContent = {
 type MessageContent = TextContent | ImageContent;
 
 // In-memory store for run statuses
-const runStatusStore = {};
+interface RunStatusStore {
+  [key: string]: RunStatus; // Define the type of the store
+}
+
+const runStatusStore: RunStatusStore = {}; // Initialize the store with the proper type
 
 // Post a new message and stream OpenAI Assistant response
 export async function POST(request: NextRequest) {
@@ -77,7 +81,7 @@ export async function POST(request: NextRequest) {
   // Create a run and stream it
   const runStream = openai.beta.threads.runs.stream(newMessage.threadId, {
     assistant_id: newMessage.assistantId
-  })
+  });
 
   const assistantStream = runStream; // Use runStream directly if it supports the necessary methods
   const readableStream = runStream.toReadableStream();
@@ -85,12 +89,10 @@ export async function POST(request: NextRequest) {
 
   // Polling function to check run status
   async function pollRunStatus(assistantStream: AssistantStream) {
-    //console.log('Polling run status started');
     let runStatus = assistantStream.currentRun();
     console.log('Initial run status:', runStatus);
 
     while (runStatus?.status !== 'completed') {
-      //console.log('Current run status:', runStatus?.status);
       console.log('Current run status:', runStatus?.status, 'Thread ID:', runStatus?.thread_id);
 
       if (runStatus?.status === 'requires_action' && runStatus.required_action) {
@@ -126,14 +128,10 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Submit tool outputs
-        //console.log('Submitting tool outputs:', toolOutputs);
         console.log('Submitting tool outputs:', toolOutputs, 'Thread ID:', runStatus.thread_id);
-        //console.log('Submitting tool outputs for thread ID:', runStatus.thread_id);
         await openai.beta.threads.runs.submitToolOutputsStream(runStatus.thread_id, runStatus.id, {
           tool_outputs: toolOutputs,
         });
-        //console.log('Tool outputs submitted');
         console.log('Tool outputs submitted for thread ID:', runStatus.thread_id);
 
         // After submitting tool outputs, break the loop and wait for the next status update
@@ -146,17 +144,20 @@ export async function POST(request: NextRequest) {
       // Fetch the current run status again from the assistantStream
       runStatus = assistantStream.currentRun();
       console.log('Run status updated:', runStatus);
-      // Store the current run status in the in-memory store
+
+      if (runStatus) {
+        runStatusStore[runStatus.thread_id] = runStatus;
+      }
+    }
+
+    if (runStatus) {
       runStatusStore[runStatus.thread_id] = runStatus;
     }
-    // Final status update
-    runStatusStore[runStatus.thread_id] = runStatus;
 
-    //console.log('Run completed');
     console.log('Run completed with status:', runStatus?.status, 'Thread ID:', runStatus?.thread_id);
     return runStatus?.status === 'completed';
   }
-  // Start polling the run status in the background
+
   pollRunStatus(runStream).then((isCompleted) => {
     console.log(`Run status completed: ${isCompleted}`);
   }).catch((error) => {
