@@ -6,17 +6,15 @@ import InputForm from './input-form';
 import { parseChartMarkdown } from './chart-gen';
 
 function containsMarkdown(content) {
-  // Check if the content contains Markdown syntax
   return /(\*\*|__|`|#|\*|-|\||\n[\-=\*]{3,}\s*$)/.test(content.replace(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g, ''));
 }
 
 export default function CinetechAssistant({
   assistantId,
-  greeting = 'I am a helpful chat assistant. How can I help you?',
-  messageLimit = 10,
+  greeting = 'I am a helpful chat assistant. How can I help you?'
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [threadId, setThreadId] = useState();
+  const [threadId, setThreadId] = useState(null); // Default to null
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState([]);
   const [streamingMessage, setStreamingMessage] = useState({
@@ -27,25 +25,34 @@ export default function CinetechAssistant({
   const inputRef = useRef(null);
   const [chunkCounter, setChunkCounter] = useState(0);
 
-  // set default greeting Message
   const greetingMessage = {
     role: 'assistant',
     content: greeting,
   };
 
+  async function initializeThread() {
+    try {
+      const response = await fetch('/api/thread-init', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      setThreadId(data.threadId);
+      return data.threadId;
+    } catch (error) {
+      console.error('Error initializing thread:', error);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // clear streaming message
     setStreamingMessage({
       role: 'assistant',
       content: 'Thinking...',
     });
 
-    // add busy indicator
     setIsLoading(true);
 
-    // add user message to list of messages
     setMessages([
       ...messages,
       {
@@ -56,85 +63,126 @@ export default function CinetechAssistant({
     ]);
     setPrompt('');
 
-    // post new message to server and stream OpenAI Assistant response
-    const response = await fetch('/api/cinetech-assistant', {
-      method: 'POST',
-      body: JSON.stringify({
-        assistantId: assistantId,
-        threadId: threadId,
-        content: prompt,
-      }),
-    });
+    try {
+      let currentThreadId = threadId;
 
-    let contentSnapshot = '';
-    let newThreadId;
-
-    // this code can be simplified when more browsers support async iteration
-    // see https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams#consuming_a_fetch_using_asynchronous_iteration
-    let reader = response.body.getReader();
-    while (true) {
-      const { value, done } = await reader.read();
-
-      if (done) {
-        break;
+      if (!currentThreadId) {
+        currentThreadId = await initializeThread();
       }
 
-      // parse server sent event
-      const strChunk = new TextDecoder().decode(value).trim();
-      //console.log('Received chunk:', strChunk);
+      const response = await fetch('/api/cinetech-assistant', {
+        method: 'POST',
+        body: JSON.stringify({
+          assistantId: assistantId,
+          threadId: currentThreadId,
+          content: prompt,
+        }),
+      });
 
-      // split on newlines (to handle multiple JSON elements passed at once)
-      const strServerEvents = strChunk.split('\n');
+      const reader = response.body.getReader();
+      let contentSnapshot = '';
+      let processingCompleted = false;
 
-      // process each event
-      for (const strServerEvent of strServerEvents) {
-        const serverEvent = JSON.parse(strServerEvent);
-        //console.log('Parsed server event:', serverEvent);
-        switch (serverEvent.event) {
-          // create new message
-          case 'thread.message.created':
-            newThreadId = serverEvent.data.thread_id;
-            setThreadId(serverEvent.data.thread_id);
-            //console.log('New thread ID set:', newThreadId);
-            break;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
 
-        // update streaming message content
-        case 'thread.message.delta':
-            if (serverEvent.data.delta.content[0].text && serverEvent.data.delta.content[0].text.value) {
-                contentSnapshot += serverEvent.data.delta.content[0].text.value;
-                const isMarkdown = serverEvent.data.delta.content[0].hasOwnProperty('markdown');
-                const newStreamingMessage = {
-                ...streamingMessage,
-                content: contentSnapshot,
-                isMarkdown: isMarkdown,
-            };
-            setStreamingMessage(newStreamingMessage);
-            setChunkCounter((prevCounter) => prevCounter + 1); // Increments the counter by one
-            //console.log('Updated streaming message:', newStreamingMessage);
+        const strChunk = new TextDecoder().decode(value).trim();
+        const strServerEvents = strChunk.split('\n\n');
+
+        for (const strServerEvent of strServerEvents) {
+          if (strServerEvent) {
+            try {
+              const serverEvent = JSON.parse(strServerEvent);
+              switch (serverEvent.event) {
+                case 'thread.message.created':
+                  setThreadId(serverEvent.data.thread_id);
+                  break;
+                case 'thread.message.delta':
+                  if (serverEvent.data.delta.content[0].text && serverEvent.data.delta.content[0].text.value) {
+                    contentSnapshot += serverEvent.data.delta.content[0].text.value;
+                    const isMarkdown = serverEvent.data.delta.content[0].hasOwnProperty('markdown');
+                    const newStreamingMessage = {
+                      ...streamingMessage,
+                      content: contentSnapshot,
+                      isMarkdown: isMarkdown,
+                    };
+                    setStreamingMessage(newStreamingMessage);
+                    setChunkCounter((prevCounter) => prevCounter + 1);
+                  }
+
+                  if (serverEvent.data.delta.content[0].image && serverEvent.data.delta.content[0].image.url) {
+                    const imageUrl = serverEvent.data.delta.content[0].image.url;
+                    const newImageMessage = {
+                      id: `image_${Date.now()}`,
+                      role: 'assistant',
+                      content: '',
+                      imageUrl: imageUrl,
+                    };
+
+                    setMessages((prevMessages) => {
+                      return [...prevMessages, newImageMessage];
+                    });
+                  }
+                  break;
+                case 'thread.processing.completed':
+                  processingCompleted = true;
+                  break;
+              }
+            } catch (error) {
+              console.error('Error parsing server event:', error, strServerEvent);
             }
-            break;
+          }
         }
       }
+
+      await fetchMessages(currentThreadId); // Fetch messages immediately after POST
+
+      if (!processingCompleted) {
+        pollForRunStatus(currentThreadId); // Start polling for run status
+      }
+    } catch (error) {
+      console.error(`Error during request with thread ID: ${threadId}`, error);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    // refetch all of the messages from the OpenAI Assistant thread
-    const messagesResponse = await fetch('/api/cinetech-assistant?' + new URLSearchParams({
-      threadId: newThreadId,
-      messageLimit: messageLimit,
-    }));
-    const allMessages = await messagesResponse.json();
-    //console.log('Fetched all messages:', allMessages);
-    setMessages(allMessages);
+  async function fetchMessages(threadId) {
+    try {
+      const messagesResponse = await fetch('/api/cinetech-assistant?' + new URLSearchParams({
+        threadId: threadId
+      }));
+      const allMessages = await messagesResponse.json();
+      setMessages(allMessages.messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  }
 
-    // remove busy indicator
-    setIsLoading(false);
+  async function pollForRunStatus(threadId) {
+    const interval = setInterval(async () => {
+      try {
+        const statusResponse = await fetch('/api/cinetech-assistant?' + new URLSearchParams({
+          threadId: threadId
+        }));
+        const { messages, runStatus } = await statusResponse.json();
+        setMessages(messages);
+
+        if (runStatus && runStatus.status === 'completed') {
+          clearInterval(interval);
+        }
+      } catch (error) {
+        console.error('Error polling for run status:', error);
+      }
+    }, 1000);
   }
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [chunkCounter]); // Triggers whenever the chunkCounter changes
+  }, [chunkCounter]);
 
   useEffect(() => {
     if (!isLoading && inputRef.current) {
@@ -142,12 +190,12 @@ export default function CinetechAssistant({
     }
   }, [isLoading, messages]);
 
-  // Log messages to console whenever they change
   useEffect(() => {
-    console.log('Current messages state:', messages);
+    if (messages.length > 0) {
+      console.log('New messages state:', JSON.stringify(messages, null, 2));
+    }
   }, [messages]);
-  
-  // handles changes to the prompt input field
+
   function handlePromptChange(e) {
     setPrompt(e.target.value);
   }
@@ -162,6 +210,7 @@ export default function CinetechAssistant({
             ...m,
             isMarkdown: containsMarkdown(m.content),
             chartData: parseChartMarkdown(m.content),
+            imageUrl: m.imageUrl,
           }}
         />
       ))}

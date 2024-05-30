@@ -15,7 +15,7 @@ export const processSearchResults = async (user_request: string, search_results:
     throw new Error('OpenAI API key is not set in the environment variables');
   }
 
-  console.log('Analyzing/processing Bing search results');
+  console.log('Analyzing/processing Bing search results:', search_results);
 
   // Use GPT to analyze the Bing search results
   const prompt = `Analyze these Bing search results: '${search_results}'\nbased on this user request: ${user_request}`;
@@ -35,7 +35,7 @@ export const processSearchResults = async (user_request: string, search_results:
 
   const analysis = response.data.choices[0].message.content.trim();
 
-  //console.log(`Analysis: ${analysis}`);
+  console.log('Analysis result:', analysis);
 
   // Return the analysis
   return analysis;

@@ -4,6 +4,9 @@ import remarkGfm from 'remark-gfm';
 import { ChartComponent } from './chart-gen';
 
 export default function CinetechAssistantMessage({ message }) {
+  if (!message) return null;
+  if (!message.role) return null;
+
   function displayRole(roleName) {
     const maroonRed = '#800000';
     const roleStyle = {
@@ -21,26 +24,17 @@ export default function CinetechAssistantMessage({ message }) {
     }
   }
 
-  const formatHyperlinks = (text) => {
-    const urlRegex = /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g;
-
-    return text.replace(urlRegex, (match, text, url) => {
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer"><strong><u>${text}</u></strong></a>`;
-    });
-  };
-
-  const renderFormattedResponse = () => {
-    const formattedText = formatHyperlinks(message.content);
-    return (
-      <div
-        dangerouslySetInnerHTML={{ __html: formattedText }}
-        className="mx-4 text-left overflow-auto openai-text"
-      />
-    );
-  };
-
-  const isImageUrl = (url) => {
-    return url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+  const renderers = {
+    image: ({ src, alt }) => {
+      return <img src={src} alt={alt} className="mx-4 my-2 rounded-lg" />;
+    },
+    link: ({ href, children }) => {
+      return (
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          {children}
+        </a>
+      );
+    },
   };
 
   return (
@@ -48,17 +42,15 @@ export default function CinetechAssistantMessage({ message }) {
       className={`flex flex-col rounded text-gray-700 text-left px-4 py-2 m-2 bg-opacity-100`}
       style={{ alignItems: 'flex-start' }}
     >
-      <div className="text-4xl">{displayRole(message.role)}</div>
+      <div className="text-4xl" style={{ userSelect: 'text' }}>{displayRole(message.role)}</div>
       {message.chartData ? (
         <div className="chart-container">
           <ChartComponent {...message.chartData} />
         </div>
-      ) : isImageUrl(message.content) ? (
-        <img src={message.content} alt="Generated content" className="mx-4 my-2 rounded-lg" />
-      ) : message.isMarkdown ? (
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
       ) : (
-        <div>{renderFormattedResponse()}</div>
+        <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
+          {message.content}
+        </ReactMarkdown>
       )}
     </div>
   );
