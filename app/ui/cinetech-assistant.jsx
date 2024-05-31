@@ -160,9 +160,7 @@ export default function CinetechAssistant({
     }
   }
 
-  async function pollForRunStatus(threadId, timeout = 60000) { // timeout in milliseconds, default is 60 seconds
-    const startTime = Date.now();
-    
+  async function pollForRunStatus(threadId) {
     const interval = setInterval(async () => {
       try {
         const statusResponse = await fetch('/api/cinetech-assistant?' + new URLSearchParams({
@@ -170,11 +168,8 @@ export default function CinetechAssistant({
         }));
         const { messages, runStatus } = await statusResponse.json();
         setMessages(messages);
-  
+
         if (runStatus && runStatus.status === 'completed') {
-          clearInterval(interval);
-        } else if (Date.now() - startTime >= timeout) {
-          console.warn('Polling timed out.');
           clearInterval(interval);
         }
       } catch (error) {
@@ -182,7 +177,6 @@ export default function CinetechAssistant({
       }
     }, 1000);
   }
-  
 
   useEffect(() => {
     if (messagesEndRef.current) {

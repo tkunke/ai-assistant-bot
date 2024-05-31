@@ -89,10 +89,24 @@ export async function POST(request: NextRequest) {
 
   // Polling function to check run status
   async function pollRunStatus(assistantStream: AssistantStream) {
-    let runStatus = assistantStream.currentRun();
+    let runStatus: OpenAI.Beta.Threads.Runs.Run | undefined;
+    let runId: string | undefined;
+    let isCompleted = false;
+
+    // Wait for the initial run status to be available
+    while (!runStatus) {
+      runStatus = assistantStream.currentRun();
+      if (runStatus) {
+        runId = runStatus.id;
+      } else {
+        console.log('Current run is undefined, retrying...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
     console.log('Initial run status:', runStatus);
 
-    while (runStatus?.status !== 'completed') {
+    while (!isCompleted) {
       console.log('Current run status:', runStatus?.status, 'Thread ID:', runStatus?.thread_id);
 
       if (runStatus?.status === 'requires_action' && runStatus.required_action) {
@@ -103,8 +117,8 @@ export async function POST(request: NextRequest) {
         for (const toolCall of toolCalls) {
           const functionName = toolCall.function.name;
           const args = JSON.parse(toolCall.function.arguments);
-          let output: string | undefined;
-
+          let output;
+  
           try {
             if (functionName === 'performBingSearch') {
               const searchResults = await performBingSearch(args.user_request); 
@@ -116,26 +130,46 @@ export async function POST(request: NextRequest) {
               const imageUrl = await generateImage(args.content);
               output = imageUrl ?? undefined;
             }
-
+  
             toolOutputs.push({
               tool_call_id: toolCall.id,
               output: output,
             });
+
+            // Check the run status after processing each tool call
+            runStatus = await openai.beta.threads.runs.retrieve(runStatus.thread_id, runId!);
+            if (runStatus.status === 'completed') {
+              console.log('Run is completed after processing tool call, breaking the loop.');
+              isCompleted = true;
+              break;
+            }
+
           } catch (error) {
             console.error(`Error performing ${functionName}:`, error);
-            // Handle the error appropriately, e.g., log it or add a failed status
             continue;
           }
         }
 
+        if (isCompleted) {
+          break;
+        }
+
         console.log('Submitting tool outputs:', toolOutputs, 'Thread ID:', runStatus.thread_id);
-        openai.beta.threads.runs.submitToolOutputsStream(runStatus.thread_id, runStatus.id, {
+        await openai.beta.threads.runs.submitToolOutputsStream(runStatus.thread_id, runStatus.id, {
           tool_outputs: toolOutputs,
         });
         console.log('Tool outputs submitted for thread ID:', runStatus.thread_id);
+        
+        // Retrieve the latest run status using runId
+        runStatus = await openai.beta.threads.runs.retrieve(runStatus.thread_id, runId!);
+        console.log('Run status retrieved:', runStatus);
 
-        // After submitting tool outputs, break the loop and wait for the next status update
-        break;
+        // Check if the run status is completed and break the loop if it is
+        if (runStatus.status === 'completed') {
+          console.log('Run is completed after submitting tool outputs, breaking the loop.');
+          isCompleted = true;
+          break;
+        }
       }
 
       // Implement a delay or polling mechanism to avoid too frequent requests
@@ -145,11 +179,26 @@ export async function POST(request: NextRequest) {
       runStatus = assistantStream.currentRun();
       console.log('Run status updated:', runStatus);
 
+      // Check if the runStatus is null or undefined
+      if (!runStatus) {
+        console.log('Run status is no longer available. Exiting loop.');
+        break;
+      }
+
+      // Break the loop if the run status is completed
+      if (runStatus?.status === 'completed') {
+        console.log('Run is completed in the polling loop, breaking.');
+        isCompleted = true;
+        break;
+      }
+
+      // Update the run status store
       if (runStatus) {
         runStatusStore[runStatus.thread_id] = runStatus;
       }
     }
 
+    // Final update to the run status store
     if (runStatus) {
       runStatusStore[runStatus.thread_id] = runStatus;
     }
@@ -189,7 +238,7 @@ export async function GET(request: NextRequest) {
       const messageContent = m.content[0] as MessageContent;
       if (messageContent.type === 'text') {
         content = messageContent.text.value;
-      } else if (messageContent.type === 'image_file' || messageContent.type === 'image_url') {
+      } else if (messageContent.type === 'image_file' || 'image_url') {
         content = messageContent.image.url;
       }
     }
