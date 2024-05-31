@@ -6,7 +6,7 @@ import { generateImage } from '../../helpers/generateImage'; // Adjust the impor
 import { AssistantStream } from 'openai/lib/AssistantStream';
 
 // This enables Edge Functions in Vercel
-export const runtime = 'edge';
+//export const runtime = 'edge';
 
 // Define the RunStatus type
 interface RunStatus {
