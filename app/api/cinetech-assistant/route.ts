@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('Submitting tool outputs:', toolOutputs, 'Thread ID:', runStatus.thread_id);
-        await openai.beta.threads.runs.submitToolOutputsStream(runStatus.thread_id, runStatus.id, {
+        openai.beta.threads.runs.submitToolOutputsStream(runStatus.thread_id, runStatus.id, {
           tool_outputs: toolOutputs,
         });
         console.log('Tool outputs submitted for thread ID:', runStatus.thread_id);
