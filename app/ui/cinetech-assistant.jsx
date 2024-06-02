@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import CinetechAssistantMessage from './assistant-message';
 import InputForm from './input-form';
 import { parseChartMarkdown } from './chart-gen';
+import styles from './cinetech-assistant.module.css';
 
 function containsMarkdown(content) {
   return /(\*\*|__|`|#|\*|-|\||\n[\-=\*]{3,}\s*$)/.test(content.replace(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g, ''));
@@ -29,6 +30,8 @@ export default function CinetechAssistant({
     role: 'assistant',
     content: greeting,
   };
+
+  const bufferRef = useRef('');
 
   async function initializeThread() {
     try {
@@ -62,6 +65,10 @@ export default function CinetechAssistant({
       },
     ]);
     setPrompt('');
+    // Reset the height of the textarea
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto';
+    }
 
     try {
       let currentThreadId = threadId;
@@ -82,12 +89,20 @@ export default function CinetechAssistant({
       const reader = response.body.getReader();
       let contentSnapshot = '';
       let processingCompleted = false;
+      const decoder = new TextDecoder();
+
+      const updateContent = () => {
+        setStreamingMessage((prevMessage) => ({
+          ...prevMessage,
+          content: contentSnapshot,
+        }));
+      };
 
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
 
-        const strChunk = new TextDecoder().decode(value).trim();
+        const strChunk = decoder.decode(value, { stream: true }).trim();
         const strServerEvents = strChunk.split('\n\n');
 
         for (const strServerEvent of strServerEvents) {
@@ -101,14 +116,8 @@ export default function CinetechAssistant({
                 case 'thread.message.delta':
                   if (serverEvent.data.delta.content[0].text && serverEvent.data.delta.content[0].text.value) {
                     contentSnapshot += serverEvent.data.delta.content[0].text.value;
-                    const isMarkdown = serverEvent.data.delta.content[0].hasOwnProperty('markdown');
-                    const newStreamingMessage = {
-                      ...streamingMessage,
-                      content: contentSnapshot,
-                      isMarkdown: isMarkdown,
-                    };
-                    setStreamingMessage(newStreamingMessage);
-                    setChunkCounter((prevCounter) => prevCounter + 1);
+                    bufferRef.current = contentSnapshot;
+                    updateContent();
                   }
 
                   if (serverEvent.data.delta.content[0].image && serverEvent.data.delta.content[0].image.url) {
@@ -201,37 +210,32 @@ export default function CinetechAssistant({
   }
 
   return (
-    <div className="flex flex-col relative py-10">
-      <CinetechAssistantMessage message={greetingMessage} />
-      {messages.map((m) => (
-        <CinetechAssistantMessage
-          key={m.id}
-          message={{
-            ...m,
-            isMarkdown: containsMarkdown(m.content),
-            chartData: parseChartMarkdown(m.content),
-            imageUrl: m.imageUrl,
-          }}
-        />
-      ))}
-      {isLoading && <CinetechAssistantMessage message={streamingMessage} />}
-      <div ref={messagesEndRef} style={{ height: '1px' }}></div>
-      <div>
-        <footer className="footer">
-          <div
-            className="mx-auto mb-20 max-w-custom text-center p-8 rounded-lg xs:p-2 md:p-4 md:py-2"
-            style={{ height: '2vh' }}
-          >
-            <InputForm
-              handleSubmit={handleSubmit}
-              handlePromptChange={handlePromptChange}
-              prompt={prompt}
-              isLoading={isLoading}
-              inputRef={inputRef}
-            />
-          </div>
-        </footer>
+    <div className="flex flex-col h-full justify-between">
+      <div className="flex flex-col mb-10 items-center justify-center">
+        <CinetechAssistantMessage message={greetingMessage} />
+        {messages.map((m) => (
+          <CinetechAssistantMessage
+            key={m.id}
+            message={{
+              ...m,
+              isMarkdown: containsMarkdown(m.content),
+              chartData: parseChartMarkdown(m.content),
+              imageUrl: m.imageUrl,
+            }}
+          />
+        ))}
+        {isLoading && <CinetechAssistantMessage message={streamingMessage} />}
+        <div ref={messagesEndRef} style={{ height: '1px' }}></div>
       </div>
+      <footer className={styles.footer}>
+        <InputForm
+          handleSubmit={handleSubmit}
+          handlePromptChange={handlePromptChange}
+          prompt={prompt}
+          isLoading={isLoading}
+          inputRef={inputRef}
+        />
+      </footer>
     </div>
   );
 }

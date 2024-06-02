@@ -1,8 +1,10 @@
 'use client';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from "react";
 import CinetechAssistant from "@/app/ui/cinetech-assistant";
-import '/app/globals.css';
-
+import Sidebar from '../sidebar/page';
+import styles from './assistant.module.css';
 
 export default function Home() {
   const [screenOrientation, setScreenOrientation] = useState("portrait");
@@ -30,21 +32,17 @@ export default function Home() {
   const landscapeBackground = "/background_landscape.png";
 
   return (
-    <div className="relative text-center" style={{ width: "100vw", height: "100vh" }}>
-      <header className="header-assistant">
-        <div className="mx-auto mb-12 max-w-custom text-center p-3 rounded-lg" style={{ height: '5rem' }}>
-        <h1 className="mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-none tracking-tight text-gray-900">CineTech Assistant</h1>
-        <p className="text-sm sm:text-base md:text-lg text-gray-800">This is the beta version of our new technical assistant powered by OpenAI.</p>
-        </div>
-      </header>
-      <main>
-        <div className="mx-auto lg:mr-20 lg:ml-20 mb-12 text-sm sm:text-base md:text-lg text-center p-8 rounded-lg"> 
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex-1 flex flex-col ml-64">
+        <header className={styles.header}></header>
+        <main className={styles.main}>
           <CinetechAssistant 
             assistantId="asst_fmjzsttDthGzzJud4Vv2bDGq"
             greeting="Hey there! How can I help?"
           />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

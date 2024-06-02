@@ -1,0 +1,14 @@
+.sidebar {
+    width: 16rem; /* 64 * 0.25rem */
+    height: 100vh;
+    background-image: url('/background_landscape.png');
+    color: #ffffff; /* white */
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space between top and bottom sections */
+    padding: 1rem;
+}
+  

@@ -1,0 +1,20 @@
+.selfStart {
+    align-self: flex-start;
+}
+  
+.selfCenter {
+    align-self: center;
+}
+  
+.messageContainer {
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.9); /* Adjust as needed */
+}
+  
+.messageContainer img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}

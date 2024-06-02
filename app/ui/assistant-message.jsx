@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ChartComponent } from './chart-gen';
+import styles from './assistant-message.module.css';
 
 export default function CinetechAssistantMessage({ message }) {
   if (!message) return null;
@@ -18,7 +19,7 @@ export default function CinetechAssistantMessage({ message }) {
       case 'user':
         return <span style={roleStyle}>User</span>;
       case 'assistant':
-        return <span style={roleStyle}>Cinetech</span>;
+        return <span style={roleStyle}>Ozzi</span>;
       default:
         return null;
     }
@@ -26,7 +27,7 @@ export default function CinetechAssistantMessage({ message }) {
 
   const renderers = {
     image: ({ src, alt }) => {
-      return <img src={src} alt={alt} className="mx-4 my-2 rounded-lg" />;
+      return <img src={src} alt={alt} className="mx-auto my-2 rounded-lg" />;
     },
     link: ({ href, children }) => {
       return (
@@ -37,10 +38,13 @@ export default function CinetechAssistantMessage({ message }) {
     },
   };
 
+  const isImageMessage = message.content.includes("![") && message.content.includes("](");
+
   return (
     <div
-      className={`flex flex-col rounded text-gray-700 text-left px-4 py-2 m-2 bg-opacity-100`}
-      style={{ alignItems: 'flex-start' }}
+      className={`${styles.messageContainer} ${
+        message.role === 'user' ? styles.selfStart : isImageMessage ? styles.selfCenter : styles.selfStart
+      } text-gray-700 text-left px-4 py-2 m-2 bg-opacity-100`}
     >
       <div className="text-4xl" style={{ userSelect: 'text' }}>{displayRole(message.role)}</div>
       {message.chartData ? (
