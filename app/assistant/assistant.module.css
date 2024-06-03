@@ -19,3 +19,9 @@
     /*width: calc(100% - 16rem);*/
     overflow: auto;
 }
+
+@media (max-width: 360px) {
+    .main {
+        left: 0;
+    }
+}

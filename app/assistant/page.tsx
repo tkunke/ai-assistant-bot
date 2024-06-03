@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex flex-col ml-64">
+      <div className="flex-1 flex flex-col ml-0 md:ml-64">
         <header className={styles.header}></header>
         <main className={styles.main}>
           <CinetechAssistant 

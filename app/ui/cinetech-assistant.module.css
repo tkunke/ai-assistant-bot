@@ -10,3 +10,16 @@
     padding: 0.5rem 1rem;
     height: 4.5rem; /* Set a fixed height for the footer */
 }
+
+@media (max-width: 360px) {
+    .footer {
+        left: 0;
+        width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .footer {
+      left: 0;
+      width: 100%;
+    }
+}

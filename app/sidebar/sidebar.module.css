@@ -1,3 +1,4 @@
+/* sidebar.module.css */
 .sidebar {
     width: 16rem; /* 64 * 0.25rem */
     height: 100vh;
@@ -10,5 +11,36 @@
     flex-direction: column;
     justify-content: space-between; /* Distribute space between top and bottom sections */
     padding: 1rem;
-}
+    transition: transform 0.3s ease;
+    transform: translateX(-100%); /* Hide by default on small screens */
+    z-index: 999;
+  }
+  
+  .sidebar.visible {
+    transform: translateX(0);
+  }
+  
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+    }
+  
+    .sidebar {
+      transform: translateX(-100%);
+    }
+  
+    .sidebar.visible {
+      transform: translateX(0);
+    }
+  }
   

@@ -96,6 +96,7 @@ export default function CinetechAssistant({
           ...prevMessage,
           content: contentSnapshot,
         }));
+        setChunkCounter((prevCounter) => prevCounter + 1);
       };
 
       while (true) {
@@ -132,6 +133,7 @@ export default function CinetechAssistant({
                     setMessages((prevMessages) => {
                       return [...prevMessages, newImageMessage];
                     });
+                    setChunkCounter((prevCounter) => prevCounter + 1);
                   }
                   break;
                 case 'thread.processing.completed':

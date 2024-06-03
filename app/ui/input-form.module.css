@@ -38,3 +38,13 @@
 .button:disabled {
   background-color: rgba(112, 162, 177, 0.5); /* Lighter shade when disabled */
 }
+
+@media (max-width: 768px) {
+  .textarea-container {
+    width: 90%; /* Make the textarea-container wider on small screens */
+  }
+
+  .textarea {
+    width: 100%; /* Ensure the textarea takes the full width of the container */
+  }
+}
