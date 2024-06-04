@@ -126,7 +126,7 @@ export default function CinetechAssistant({
                     const newImageMessage = {
                       id: `image_${Date.now()}`,
                       role: 'assistant',
-                      content: '',
+                      content: `![image](${imageUrl})`,
                       imageUrl: imageUrl,
                     };
 
