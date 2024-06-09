@@ -12,7 +12,7 @@ interface SidebarProps {
 }
 
 // Functional component with typed props
-const Sidebar: React.FC<SidebarProps> = ({ generatePdf, imageLibrary }) => {
+const Sidebar = ({ generatePdf, imageLibrary }: SidebarProps) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isCreativeExpanded, setIsCreativeExpanded] = useState(false);
   const [isExpertExpanded, setIsExpertExpanded] = useState(false);
