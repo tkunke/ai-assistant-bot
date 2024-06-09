@@ -4,7 +4,6 @@ import { performBingSearch } from '../../helpers/performBingSearch'; // Adjust t
 import { processSearchResults } from '../../helpers/processSearchResults'; // Adjust the import path as needed
 import { generateImage } from '../../helpers/generateImage'; // Adjust the import path as needed
 import { AssistantStream } from 'openai/lib/AssistantStream';
-import { genStoryBoard } from '@/app/helpers/storyboardImage';
 
 // This enables Edge Functions in Vercel
 //export const runtime = 'edge';
@@ -130,10 +129,7 @@ export async function POST(request: NextRequest) {
             } else if (functionName === 'generateImage') {
               const imageUrl = await generateImage(args.content);
               output = imageUrl ?? undefined;
-            } else if (functionName === 'genStoryBoard') {
-              const imageUrl = await genStoryBoard(args.content);
-              output = imageUrl ?? undefined;
-            }
+            } else if (functionName === 'genStoryBoard')
   
             toolOutputs.push({
               tool_call_id: toolCall.id,
