@@ -168,15 +168,9 @@ export default function CinetechAssistantMessage({ message, selectedMessages = [
           </div>
         )}
       </div>
-      {message.chartData ? (
-        <div className="chart-container">
-          <ChartComponent {...message.chartData} />
-        </div>
-      ) : (
         <ReactMarkdown components={renderers} remarkPlugins={[remarkGfm]}>
           {message.content}
         </ReactMarkdown>
-      )}
     </div>
   );
 }
