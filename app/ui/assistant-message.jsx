@@ -1,18 +1,24 @@
 import React, { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChartComponent } from './chart-gen';
-import styles from './assistant-message.module.css';
+import styles from '../css-modules/assistant-message.module.css';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { AiOutlineDownload } from 'react-icons/ai'; // Import the icon
+import { AiOutlineDownload } from 'react-icons/ai';
+import { FaCheck } from 'react-icons/fa';
+import { FaFilm, FaImages } from 'react-icons/fa';
 
-export default function CinetechAssistantMessage({ message }) {
+export default function CinetechAssistantMessage({ message, selectedMessages = [], setSelectedMessages, addToImageLibrary }) {
   const tableRef = useRef(null);
   const buttonRef = useRef(null);
 
   if (!message) return null;
   if (!message.role) return null;
+
+  const hasImages = (content) => {
+    const imagePattern = /!\[.*\]\((.*)\)/;
+    return imagePattern.test(content);
+  };
 
   function displayRole(roleName) {
     const maroonRed = '#800000';
@@ -20,12 +26,6 @@ export default function CinetechAssistantMessage({ message }) {
       fontWeight: 'bold',
       fontSize: '16px',
       color: roleName === 'assistant' ? maroonRed : 'inherit',
-    };
-
-    const iconStyle = {
-      width: '16px',
-      height: '16px',
-      marginRight: '4px', // Adjust spacing as needed
     };
     
     switch (roleName) {
@@ -69,6 +69,14 @@ export default function CinetechAssistantMessage({ message }) {
       .catch(() => alert('Could not download image'));
   };
 
+  const handleMessageSelect = (message) => {
+    setSelectedMessages((prevSelectedMessages) =>
+      prevSelectedMessages.some(m => m.id === message.id)
+        ? prevSelectedMessages.filter(m => m.id !== message.id)
+        : [...prevSelectedMessages, message]
+    );
+  };
+
   const renderers = {
     table: ({ node, children }) => (
       <div className="relative-container" ref={tableRef}>
@@ -76,25 +84,48 @@ export default function CinetechAssistantMessage({ message }) {
           {children}
         </table>
         <div
-        className="download-button"
-        ref={buttonRef}
-        onClick={handleDownloadTable}
-        style={{ fontSize: '1.75rem', cursor: 'pointer' }} // Inline styles for the icon
-      >
-        <AiOutlineDownload />
-      </div>
+          className="download-button"
+          ref={buttonRef}
+          onClick={handleDownloadTable}
+          style={{ fontSize: '1.75rem', cursor: 'pointer' }} title='Download as pdf'
+        >
+          <AiOutlineDownload />
+        </div>
       </div>
     ),
     img: ({ src, alt }) => (
-      <div className="relative-container">
+      <div className="relative-container" style={{ position: 'relative' }}>
         <img src={src} alt={alt} className="mx-auto my-2 rounded-lg" />
         <div
-        className="download-button"
-        onClick={() => handleDownloadImage(src)}
-        style={{ fontSize: '1.75rem', cursor: 'pointer' }} // Inline styles for the icon
-      >
-        <AiOutlineDownload />
-      </div>
+          className="download-button"
+          onClick={() => handleDownloadImage(src)}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            color: 'gray',
+            fontSize: '1.75rem',
+            cursor: 'pointer',
+          }}
+          title='Download as png'
+        >
+          <AiOutlineDownload />
+        </div>
+        <div
+          className="add-to-library-button"
+          onClick={() => addToImageLibrary(src)}
+          style={{
+            position: 'absolute',
+            top: '50px', // Position it below the download button
+            left: '10px',
+            color: 'gray',
+            fontSize: '1.75rem',
+            cursor: 'pointer',
+          }}
+          title="Add to Image Library"
+        >
+          <FaImages />
+        </div>
       </div>
     ),
     p: ({ node, children }) => {
@@ -111,7 +142,8 @@ export default function CinetechAssistantMessage({ message }) {
     ),
   };
 
-  const isImageMessage = message.content.includes("![") && message.content.includes("](");
+  const isImageMessage = hasImages(message.content);
+  const isBreakdownMessage = message.content.includes('Storyboard Breakdown');
 
   return (
     <div
@@ -119,7 +151,23 @@ export default function CinetechAssistantMessage({ message }) {
         message.role === 'user' ? styles.selfStart : isImageMessage ? styles.selfCenter : styles.selfStart
       } text-gray-700 text-left px-4 py-2 m-2 bg-opacity-100`}
     >
-      <div className="text-4xl" style={{ userSelect: 'text' }}>{displayRole(message.role)}</div>
+      <div className="flex flex-col items-start">
+        <div className="text-4xl" style={{ userSelect: 'text' }}>{displayRole(message.role)}</div>
+        {(isImageMessage || isBreakdownMessage) && (
+          <div
+            className="select-button"
+            onClick={() => handleMessageSelect(message)}
+            style={{
+              color: selectedMessages.some(m => m.id === message.id) ? 'red' : 'gray',
+              fontSize: '1.75rem',
+              cursor: 'pointer',
+            }}
+            title='Add to shot sheet'
+          >
+            <FaFilm />
+          </div>
+        )}
+      </div>
       {message.chartData ? (
         <div className="chart-container">
           <ChartComponent {...message.chartData} />

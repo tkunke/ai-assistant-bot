@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import CinetechAssistantMessage from './assistant-message';
 import InputForm from './input-form';
-import { parseChartMarkdown } from './chart-gen';
-import styles from './cinetech-assistant.module.css';
+import styles from '../css-modules/cinetech-assistant.module.css';
 
 function containsMarkdown(content) {
   return /(\*\*|__|`|#|\*|-|\||\n[\-=\*]{3,}\s*$)/.test(content.replace(/\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g, ''));
@@ -12,7 +11,10 @@ function containsMarkdown(content) {
 
 export default function CinetechAssistant({
   assistantId,
-  greeting = 'I am a helpful chat assistant. How can I help you?'
+  greeting = 'I am a helpful chat assistant. How can I help you?',
+  selectedMessages,
+  setSelectedMessages,
+  addToImageLibrary,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState(null); // Default to null
@@ -221,9 +223,11 @@ export default function CinetechAssistant({
             message={{
               ...m,
               isMarkdown: containsMarkdown(m.content),
-              chartData: parseChartMarkdown(m.content),
               imageUrl: m.imageUrl,
             }}
+            selectedMessages={selectedMessages || []} // Pass selectedMessages
+            setSelectedMessages={setSelectedMessages} // Pass setSelectedMessages
+            addToImageLibrary={addToImageLibrary}
           />
         ))}
         {isLoading && <CinetechAssistantMessage message={streamingMessage} />}

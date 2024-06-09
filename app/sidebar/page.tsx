@@ -2,13 +2,34 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import styles from './sidebar.module.css';
+import styles from '../css-modules/sidebar.module.css';
+import { FaPlus, FaMinus, FaFilm, FaCog, FaInfoCircle, FaTools, FaImages } from 'react-icons/fa';
 
-const Sidebar = () => {
+interface SidebarProps {
+  generatePdf: () => void;
+  imageLibrary: string[];
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ generatePdf, imageLibrary }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isCreativeExpanded, setIsCreativeExpanded] = useState(false);
+  const [isExpertExpanded, setIsExpertExpanded] = useState(false);
+  const [isImageLibraryExpanded, setIsImageLibraryExpanded] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
+  };
+
+  const toggleCreativeExpand = () => {
+    setIsCreativeExpanded(!isCreativeExpanded);
+  };
+
+  const toggleExpertExpand = () => {
+    setIsExpertExpanded(!isExpertExpanded);
+  };
+
+  const toggleImageLibraryExpand = () => {
+    setIsImageLibraryExpanded(!isImageLibraryExpanded);
   };
 
   useEffect(() => {
@@ -41,19 +62,61 @@ const Sidebar = () => {
               height="200"
             />
           </Link>
+          <button
+            className="mt-4 w-full bg-opacity:100 hover:bg-gray-700 text-left text-white font-bold py-2 px-4 rounded"
+            onClick={toggleCreativeExpand}
+          >
+            Creative Tools
+          </button>
+          {isCreativeExpanded && (
+            <div className={styles.expandedSection}>
+              <button className={styles.sidebarButton} onClick={generatePdf}>
+                <FaFilm /> Generate Shot Sheet
+              </button>
+            </div>
+          )}
+          <button
+            className="mt-4 w-full bg-opacity:100 hover:bg-gray-700 text-left text-white font-bold py-2 px-4 rounded"
+            onClick={toggleExpertExpand}
+          >
+            Expert Tools
+          </button>
+          {isExpertExpanded && (
+            <div className={styles.expandedSection}>
+              <button className={styles.sidebarButton} onClick={() => alert('Tool 1 clicked')}>
+                Lens Lore
+              </button>
+              <button className={styles.sidebarButton} onClick={() => alert('Tool 2 clicked')}>
+                CineMetric Toolkit
+              </button>
+              <button className={styles.sidebarButton} onClick={() => alert('Tool 3 clicked')}>
+                Color Science
+              </button>
+            </div>
+          )}
+          <button
+            className="mt-4 w-full bg-opacity:100 hover:bg-gray-700 text-left text-white font-bold py-2 px-4 rounded"
+            onClick={toggleImageLibraryExpand}
+          >
+            Image Library
+          </button>
+          {isImageLibraryExpanded && (
+            <div className={styles.expandedSection}>
+              {imageLibrary.map((url, index) => (
+                <div key={index} className={styles.thumbnailContainer}>
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    <Image src={url} alt={`Image ${index + 1}`} width="50" height="50" className={styles.thumbnail} />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div className={styles.bottomSection}>
           <nav className="flex flex-col space-y-2">
-            <Link href="/" className="hover:bg-gray-700 p-2 rounded">
-              Home
-            </Link>
-            <Link href="/about" className="hover:bg-gray-700 p-2 rounded">
-              About
-            </Link>
             <Link href="/contact" className="hover:bg-gray-700 p-2 rounded">
               Contact
             </Link>
-            {/* Add more links as needed */}
           </nav>
         </div>
       </div>

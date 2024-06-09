@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 const openai = new OpenAI();
 
 export async function generateImage(content: string): Promise<string | null> {
+  console.log('Assistant prompt:', content)
   try {
     const response = await openai.images.generate({
       model: "dall-e-3",
