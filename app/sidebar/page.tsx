@@ -3,10 +3,16 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../css-modules/sidebar.module.css';
-import { FaFilm } from 'react-icons/fa';
+import { FaPlus, FaMinus, FaFilm, FaCog, FaInfoCircle, FaTools, FaImages } from 'react-icons/fa';
 
-// Define the prop types directly in the component
-const Sidebar = ({ generatePdf, imageLibrary }: { generatePdf: () => void; imageLibrary: string[] }) => {
+// Define the prop types
+interface SidebarProps {
+  generatePdf: () => void;
+  imageLibrary: string[];
+}
+
+// Functional component with typed props
+const Sidebar = ({ generatePdf, imageLibrary }: SidebarProps) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isCreativeExpanded, setIsCreativeExpanded] = useState(false);
   const [isExpertExpanded, setIsExpertExpanded] = useState(false);
