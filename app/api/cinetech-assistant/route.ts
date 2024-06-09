@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
             } else if (functionName === 'generateImage') {
               const imageUrl = await generateImage(args.content);
               output = imageUrl ?? undefined;
-            } else if (functionName === 'genStoryBoard')
+            }
   
             toolOutputs.push({
               tool_call_id: toolCall.id,

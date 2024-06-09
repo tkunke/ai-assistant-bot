@@ -29,8 +29,8 @@ export async function generatePdfWithSelectedMessages(messages: Message[]) {
     return imagePattern.test(content);
   };
 
-  let breakdownMessage: Message | undefined = undefined;
-  let imageMessage: Message | undefined = undefined;
+  let breakdownMessage: Message | undefined;
+  let imageMessage: Message | undefined;
 
   messages.forEach(message => {
     if (hasImages(message.content)) {
@@ -56,7 +56,7 @@ export async function generatePdfWithSelectedMessages(messages: Message[]) {
 
   // Extract image URLs from the image message
   const imagePattern = /!\[.*\]\((.*)\)/g;
-  const imageUrls = [];
+  const imageUrls: string[] = [];
   let match;
   while ((match = imagePattern.exec(imageMessage.content)) !== null) {
     imageUrls.push(match[1]);
@@ -122,7 +122,7 @@ export async function generatePdfWithSelectedMessages(messages: Message[]) {
         const imageX = pageWidth / 2 + margin / 2 + 2;
         const imageY = y + margin;
         pdf.addImage(imageData, "PNG", imageX, imageY, imageWidth - 4, imageHeight - 4);
-      } catch (error) {
+      } catch (error: any) {
         console.error(`Error loading image: ${error.message}`);
       }
     }
@@ -188,4 +188,3 @@ function parseStoryboard(content: string): Storyboard {
 
   return { title, panels };
 }
-
