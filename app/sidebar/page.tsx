@@ -3,16 +3,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from '../css-modules/sidebar.module.css';
-import { FaPlus, FaMinus, FaFilm, FaCog, FaInfoCircle, FaTools, FaImages } from 'react-icons/fa';
+import { FaFilm } from 'react-icons/fa';
 
-// Define the prop types
-interface SidebarProps {
-  generatePdf: () => void;
-  imageLibrary: string[];
-}
-
-// Functional component with typed props
-const Sidebar = ({ generatePdf, imageLibrary }: SidebarProps) => {
+// Define the prop types directly in the component
+const Sidebar = ({ generatePdf, imageLibrary }: { generatePdf: () => void; imageLibrary: string[] }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isCreativeExpanded, setIsCreativeExpanded] = useState(false);
   const [isExpertExpanded, setIsExpertExpanded] = useState(false);
@@ -104,7 +98,7 @@ const Sidebar = ({ generatePdf, imageLibrary }: SidebarProps) => {
           </button>
           {isImageLibraryExpanded && (
             <div className={styles.expandedSection}>
-              {imageLibrary.map((url: string, index: number) => (
+              {imageLibrary.map((url, index) => (
                 <div key={index} className={styles.thumbnailContainer}>
                   <a href={url} target="_blank" rel="noopener noreferrer">
                     <Image src={url} alt={`Image ${index + 1}`} width="50" height="50" className={styles.thumbnail} />
