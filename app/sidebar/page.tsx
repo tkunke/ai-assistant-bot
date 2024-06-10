@@ -6,9 +6,9 @@ import styles from '../css-modules/sidebar.module.css';
 import { FaFilm } from 'react-icons/fa';
 
 // Functional component with typed props
-export default function Sidebar({ 
-  generatePdf, 
-  imageLibrary 
+export default function Sidebar({
+  generatePdf,
+  imageLibrary,
 }: {
   generatePdf: () => void;
   imageLibrary: string[];
