@@ -5,14 +5,12 @@ import Image from 'next/image';
 import styles from '../css-modules/sidebar.module.css';
 import { FaFilm } from 'react-icons/fa';
 
-// Functional component with typed props
-export default function Sidebar({
-  generatePdf,
-  imageLibrary,
-}: {
+interface SidebarProps {
   generatePdf: () => void;
   imageLibrary: string[];
-}) {
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ generatePdf, imageLibrary }) => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isCreativeExpanded, setIsCreativeExpanded] = useState(false);
   const [isExpertExpanded, setIsExpertExpanded] = useState(false);
@@ -125,3 +123,5 @@ export default function Sidebar({
     </>
   );
 };
+
+export default Sidebar as React.FC<SidebarProps>;

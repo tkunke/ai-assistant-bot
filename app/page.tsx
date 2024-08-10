@@ -33,7 +33,7 @@ const ResponsiveDiv = () => {
           <header className="header-homepage">
             <div className="header-content">
               <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                Welcome to the CineTech Assistant
+                Coming Soon!
               </h1>
             </div>
           </header>
@@ -51,11 +51,6 @@ const ResponsiveDiv = () => {
             <div className="absolute bottom-12 left-0 w-full h-1/3 flex justify-center" style={{ zIndex: '50'}}>
               <div className="container mx-auto px-4 py-4 flex flex-col items-center">
                 <div className="mb-3 md:mb-6">
-                  <Link href="/assistant">
-                    <button className="px-4 md:px-12 py-2 md:py-3 bg-white text-gray-700 text-sm md:text-base rounded-full hover:bg-gray-200 hover:text-gray-900 transition duration-300 ease-in-out">
-                    Try the Assistant
-                    </button>
-                  </Link>
                 </div>
               </div>
             </div>
@@ -73,7 +68,7 @@ const ResponsiveDiv = () => {
           <header className="header-homepage">
             <div className="header-content">
               <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                Welcome to the CineTech Assistant
+                Coming Soon!
               </h1>
             </div>
           </header>
@@ -90,11 +85,6 @@ const ResponsiveDiv = () => {
             {/* Button overlay */}
             <div className="overlay-button-container">
                 <div className="mb-2 md:mb-6">
-                  <Link href="/assistant">
-                    <button className="xs:px-2 sm:px-4 md:px-12 xs:py-1 sm:py-2 md:py-3 bg-white text-gray-700 xs:text-xs sm:text-sm md:text-base rounded-full hover:bg-gray-200 hover:text-gray-900 transition duration-300 ease-in-out">
-                    Try the Assistant
-                    </button>
-                  </Link>
                 </div>
             </div>
           </div>
