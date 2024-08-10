@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
 import CinetechAssistant from "@/app/ui/cinetech-assistant";
-import Sidebar from '../sidebar/page';
 import styles from '../css-modules/assistant.module.css';
 import { generatePdfWithSelectedMessages } from '../helpers/generateShotSheet';
 
@@ -50,7 +49,6 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <Sidebar generatePdf={handleGeneratePdfClick} imageLibrary={imageLibrary} />
       <div className="flex-1 flex flex-col ml-0 md:ml-64">
         <header className={styles.header}></header>
         <main className={styles.main}>
