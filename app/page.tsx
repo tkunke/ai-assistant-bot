@@ -1,106 +1,82 @@
-'use client';
+"use client";
+import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import styles from './styles/homepage.module.css';
 
-type Orientation = 'portrait' | 'landscape' | null;
+const HomePage: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
 
-const ResponsiveDiv = () => {
-  // Initialize state with null to indicate the server doesn't know the orientation
-  const [orientation, setOrientation] = useState<Orientation>(null);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-  useEffect(() => {
-    // Update the orientation based on the current window dimensions
-    const updateOrientation = () => {
-      setOrientation(window.innerWidth > window.innerHeight ? 'landscape' : 'portrait');
-    };
+    try {
+      const response = await fetch('/api/notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    // Call updateOrientation initially and also set it as the resize event handler
-    updateOrientation();
-    window.addEventListener('resize', updateOrientation);
+      const result = await response.json();
+      if (response.ok) {
+        setStatusMessage('Thank you for signing up!');
+        setEmail(''); // Clear input
+      } else {
+        setStatusMessage(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      setStatusMessage('Something went wrong. Please try again.');
+    }
+  };
 
-    // Cleanup function to remove event listener
-    return () => {
-      window.removeEventListener('resize', updateOrientation);
-    };
-  }, []);
-
-  // Render based on orientation, or render nothing until the orientation is determined
   return (
-    <div className="page-background">
-      {orientation === "landscape" ? (
-        <div>
-          <header className="header-homepage">
-            <div className="header-content">
-              <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                Coming Soon!
-              </h1>
-            </div>
-          </header>
-          {/* Overlay Container */}
-          <div className="overlay-image-container">
+    <div className={styles.pageWrapper}>
+      <div className={styles.content}>
+        <header className={styles.header}>
+          <h1 className={styles.headerTitle}>CineTech AI</h1>
+          <p className={styles.description}>AI for film production</p>
+          <div className={styles.headerButtons}>
+          </div>
+        </header>
+
+        <section className={styles.section}>
+          <div className={styles.imageTextContainer}>
             <Image
-              src="/cinetech_art.png"
+              src="/bw_logo.png"
               alt="Cinetech Logo"
-              width="0"
-              height="0"
-              sizes="100vw"
-              className="overlay-image"
+              width={500}
+              height={500}
+              className={styles.sectionImage}
             />
-            {/* Button overlay */}
-            <div className="absolute bottom-12 left-0 w-full h-1/3 flex justify-center" style={{ zIndex: '50'}}>
-              <div className="container mx-auto px-4 py-4 flex flex-col items-center">
-                <div className="mb-3 md:mb-6">
-                </div>
-              </div>
+            <div className={styles.textContent}>
+              <h2>Your Creative Partner</h2>
+              <p>
+                We provide AI-driven solutions for filmmakers and creatives in the entertainment industry. Whether you&aposre a seasoned professional or a passionate enthusiast, CineTech AI is here to help.
+              </p>
+              <p>
+                We&aposll be live soon! If you&aposre interested in being notified when we launch, please sign up below:
+              </p>
+              <form className={styles.emailForm} onSubmit={handleSubmit}>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={styles.emailInput}
+                  required
+                />
+                <button type="submit" className={styles.submitButton}>
+                  Sign Up
+                </button>
+              </form>
             </div>
           </div>
-          <footer className="footer-homepage">
-            <div className="footer-content">
-              <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                The CineTech Assistant is designed as an advanced virtual aide for industry professionals and enthusiasts
-              </h1>
-            </div>
-          </footer>
-        </div>
-      ) : orientation === "portrait" ? (
-        <div>
-          <header className="header-homepage">
-            <div className="header-content">
-              <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                Coming Soon!
-              </h1>
-            </div>
-          </header>
-          {/* Overlay container */}
-          <div className="overlay-image-container">
-            <Image
-              src="/cinetech_art.png"
-              alt="Cinetech Logo"
-              width="0"
-              height="0"
-              sizes="100vw"
-              className="overlay-image"
-            />
-            {/* Button overlay */}
-            <div className="overlay-button-container">
-                <div className="mb-2 md:mb-6">
-                </div>
-            </div>
-          </div>
-          <footer className="footer-homepage">
-            <div className="footer-content">
-              <h1 className="text-cyan-100" style={{ fontFamily: "'Limelight', 'sans-serif'" }}>
-                The CineTech Assistant is designed as an advanced virtual aide for industry professionals and enthusiasts
-              </h1>
-            </div>
-          </footer>
-        </div>
-      ) : (
-        <div>Loading...</div>
-      )}
+        </section>
+      </div>
     </div>
   );
-}
+};
 
-export default ResponsiveDiv;
+export default HomePage;

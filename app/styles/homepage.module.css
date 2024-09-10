@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Limelight&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Raleway:wght@400;700&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@400;700&display=swap');
+
+/* Page Background */
+.pageWrapper {
+  position: relative;
+  overflow-x: hidden;
+  background: linear-gradient(to bottom, rgb(70, 90, 110), rgb(50, 70, 90)); /* Gray-blue gradient */
+  height: 100vh;
+}
+
+/* Content Styling */
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 8rem 1rem 2rem 1rem;
+  text-align: center;
+  color: white;
+}
+
+/* Header Section */
+.header {
+  height: 8rem; /* Increase height to give more space for both title and description */
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align the header content to the left */
+  justify-content: center;
+  padding: 1rem 2rem; /* Add padding for space */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.headerTitle {
+  margin-bottom: 0.25rem; /* Add spacing between title and description */
+  font-size: 3rem;
+  font-weight: 400;
+  font-family: 'Raleway', sans-serif;
+}
+
+.description {
+  margin-top: 0.25rem; /* Add space to ensure no overlap */
+  color: #ffffff;
+  font-family: 'Raleway', sans-serif;
+}
+
+.headerButtons {
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.loginButton {
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: #4b5563;
+  font-size: 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+/* Section Styling */
+.section {
+  padding: 6rem 2rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  font-family: 'Raleway', sans-serif;
+  position: relative;
+  margin-top: 4rem;
+}
+
+/* Image and Text Container */
+.imageTextContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.sectionImage {
+  height: auto;
+  margin-right: 2rem;
+}
+
+.textContent {
+  max-width: 60%; /* Adjust width to control how much space the text takes */
+  text-align: left;
+  margin-right: 2rem;
+  font-weight: 400;
+  font-family: 'Raleway', sans-serif;
+}
+
+.textContent h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: 'Raleway', sans-serif;
+}
+
+.textContent p {
+  font-size: 1.25rem;
+}
+
+.emailForm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.emailInput {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.submitButton {
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: #4b5563;
+  font-size: 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
