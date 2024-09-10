@@ -53,10 +53,10 @@ const HomePage: React.FC = () => {
             <div className={styles.textContent}>
               <h2>Your Creative Partner</h2>
               <p>
-                We provide AI-driven solutions for filmmakers and creatives in the entertainment industry. Whether you&aposre a seasoned professional or a passionate enthusiast, CineTech AI is here to help.
+                We provide AI-driven solutions for filmmakers and creatives in the entertainment industry. Whether you&apos;re a seasoned professional or a passionate enthusiast, CineTech AI is here to help.
               </p>
               <p>
-                We&aposll be live soon! If you&aposre interested in being notified when we launch, please sign up below:
+                We&apos;ll be live soon! If you&apos;re interested in being notified when we launch, please sign up below:
               </p>
               <form className={styles.emailForm} onSubmit={handleSubmit}>
                 <input

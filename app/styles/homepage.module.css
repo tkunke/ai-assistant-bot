@@ -1,12 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Limelight&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Raleway:wght@400;700&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@400;700&display=swap');
-
 /* Page Background */
 .pageWrapper {
   position: relative;
-  overflow-x: hidden;
   background: linear-gradient(to bottom, rgb(70, 90, 110), rgb(50, 70, 90)); /* Gray-blue gradient */
-  height: 100vh;
+  min-height: 100vh; /* Make sure it always takes at least full viewport height */
+  width: 100%; /* Ensure it covers the full width of the screen */
 }
 
 /* Content Styling */
@@ -16,6 +13,10 @@
   padding: 8rem 1rem 2rem 1rem;
   text-align: center;
   color: white;
+  background-size: cover;
+  height: 100%; /* Ensure content takes full height */
+  width: 100%; /* Ensure content takes full width */
+  box-sizing: border-box; /* Ensure padding doesn't add extra space */
 }
 
 /* Header Section */
@@ -114,6 +115,7 @@
   font-size: 1.25rem;
 }
 
+/* Email Form */
 .emailForm {
   display: flex;
   flex-direction: column;
@@ -146,4 +148,3 @@
   background-color: #e5e7eb;
   color: #1f2937;
 }
-
