@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Limelight&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Raleway:wght@400;700&family=Bebas+Neue&family=Anton&family=Big+Shoulders+Display:wght@400;700&display=swap');
+
 /* Page Background */
 .pageWrapper {
   position: relative;
@@ -14,20 +17,20 @@
   text-align: center;
   color: white;
   background-size: cover;
-  height: 100%; /* Ensure content takes full height */
-  width: 100%; /* Ensure content takes full width */
-  box-sizing: border-box; /* Ensure padding doesn't add extra space */
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header Section */
 .header {
-  height: 8rem; /* Increase height to give more space for both title and description */
+  height: 8rem;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align the header content to the left */
+  align-items: flex-start;
   justify-content: center;
-  padding: 1rem 2rem; /* Add padding for space */
+  padding: 1rem 2rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -37,14 +40,14 @@
 }
 
 .headerTitle {
-  margin-bottom: 0.25rem; /* Add spacing between title and description */
+  margin-bottom: 0.25rem;
   font-size: 3rem;
   font-weight: 400;
   font-family: 'Raleway', sans-serif;
 }
 
 .description {
-  margin-top: 0.25rem; /* Add space to ensure no overlap */
+  margin-top: 0.25rem;
   color: #ffffff;
   font-family: 'Raleway', sans-serif;
 }
@@ -86,6 +89,7 @@
 /* Image and Text Container */
 .imageTextContainer {
   display: flex;
+  flex-direction: column; /* Change to column on smaller screens */
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -93,14 +97,15 @@
 }
 
 .sectionImage {
+  width: 100%;
+  max-width: 500px; /* Increase the max width for larger screens */
   height: auto;
-  margin-right: 2rem;
+  margin-bottom: 2rem;
 }
 
 .textContent {
-  max-width: 60%; /* Adjust width to control how much space the text takes */
+  max-width: 90%;
   text-align: left;
-  margin-right: 2rem;
   font-weight: 400;
   font-family: 'Raleway', sans-serif;
 }
@@ -147,4 +152,73 @@
 .submitButton:hover {
   background-color: #e5e7eb;
   color: #1f2937;
+}
+
+/* Responsive Media Queries */
+
+/* Larger screen sizes */
+@media (min-width: 1024px) {
+  .sectionImage {
+    max-width: 700px; /* Increase logo size for desktops */
+  }
+}
+
+/* Smaller screens */
+@media (max-width: 768px) {
+  .sectionImage {
+    max-width: 400px; /* Reduce the logo size for tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .sectionImage {
+    max-width: 300px; /* Further reduce logo size for mobile devices */
+  }
+}
+
+/* Adjusts layout for smaller screens */
+@media (max-width: 768px) {
+  .headerTitle {
+    font-size: 2rem;
+  }
+
+  .headerButtons {
+    top: 0.5rem;
+    right: 1rem;
+  }
+
+  .textContent {
+    max-width: 100%;
+  }
+
+  .emailInput {
+    max-width: 100%;
+  }
+}
+
+/* Adjust layout for mobile screens */
+@media (max-width: 480px) {
+  .content {
+    padding: 4rem 1rem;
+  }
+
+  .headerTitle {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 4rem 1rem;
+  }
+
+  .textContent h2 {
+    font-size: 1.5rem;
+  }
+
+  .textContent p {
+    font-size: 1rem;
+  }
 }

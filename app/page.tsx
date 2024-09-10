@@ -46,8 +46,8 @@ const HomePage: React.FC = () => {
             <Image
               src="/bw_logo.png"
               alt="Cinetech Logo"
-              width={500}
-              height={500}
+              width={700}
+              height={700}
               className={styles.sectionImage}
             />
             <div className={styles.textContent}>
